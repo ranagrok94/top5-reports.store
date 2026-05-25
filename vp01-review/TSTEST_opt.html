@@ -13,19 +13,22 @@
   <meta name="description" content="Honest VigorPeak review: we tested it against 4 top ED supplements. See why it ranked #5 — and why AlphaFuel is the #1 vascular performance formula for men in 2026." />
 
   <link rel="dns-prefetch" href="https://i.pravatar.cc">
-  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;700;900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Oswald:wght@500;700;900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap"></noscript>
-
   <!-- OTIMIZAÇÃO LCP/CLS EXTREMA: Fontes locais e Preload do Título -->
   <!-- 1. Pré-carrega a fonte do título principal para evitar CLS e acelerar LCP -->
   <link rel="preload" as="font" type="font/woff2" href="fonts/oswald-700.woff2" crossorigin="anonymous">
-  <link rel="preload" as="font" type="font/woff2" href="fonts/oswald-900.woff2" crossorigin="anonymous">
+  <link rel="preload" as="font" type="font/woff2" href="fonts/oswald-variable.woff2" crossorigin="anonymous">
   
   <!-- 2. Declaração das Fontes Locais (Substitui o Google Fonts render-blocking) -->
   <style>
+    <style>
+    /* Oswald Variable (Cobre os pesos de 200 a 700+ simulado) */
+    @font-face { 
+      font-family: 'Oswald'; 
+      font-style: normal; 
+      font-weight: 900; 
+      font-display: swap; 
+      src: local(''), url('fonts/oswald-variable.woff2') format('woff2-variations'); 
+    }
     /* Oswald */
     @font-face { font-family: 'Oswald'; font-style: normal; font-weight: 500; font-display: swap; src: local(''), url('fonts/oswald-500.woff2') format('woff2'); }
     @font-face { font-family: 'Oswald'; font-style: normal; font-weight: 700; font-display: swap; src: local(''), url('fonts/oswald-700.woff2') format('woff2'); }
