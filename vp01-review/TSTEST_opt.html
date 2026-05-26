@@ -306,7 +306,7 @@ ul.ratings li > p { margin: 0; font-size: 15px; font-weight: 800; color: #1b439c
     </div>
 </header>
     
-<div class="w-full bg-mhBlack text-white text-center py-4 px-4 border-b-4 border-mhRed">
+<div class="w-full bg-mhBlack text-white text-center py-4 px-4 border-b-4 border-mhRed" style="min-height: 72px;">
     <p class="font-display font-bold text-[32px] md:text-[42px] leading-[1.1] tracking-widest uppercase">
         WE TESTED <span class="text-mhRed">VIGORPEAK</span> AGAINST 4 TOP ED SUPPLEMENTS
     </p>
@@ -344,7 +344,14 @@ ul.ratings li > p { margin: 0; font-size: 15px; font-weight: 800; color: #1b439c
             <div class="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
                 <address class="not-italic flex items-center gap-3 text-[15px]">
                     <button id="authorTrigger" class="flex items-center gap-3 group text-left">
-                        <img src="images/dr-richard-vance.webp" alt="Richard T. Vance" class="w-12 h-12 rounded-full object-cover" width="48" height="48" fetchpriority="low" loading="lazy">
+                        <img src="images/dr-richard-vance.webp"
+                        alt="Richard T. Vance"
+                       class="w-12 h-12 rounded-full object-cover"
+                       width="48"
+                       height="48"
+                       fetchpriority="low"
+                       loading="eager"
+                       decoding="async">
                         <div class="flex flex-col">
                             <span class="font-display font-bold uppercase tracking-widest text-[11px] text-mhRed">By</span>
                             <span class="font-sans font-black text-mhBlack border-b border-transparent group-hover:border-mhRed transition-colors flex items-center gap-1">
