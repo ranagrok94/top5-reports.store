@@ -1275,16 +1275,15 @@ ul.ratings li > p { margin: 0; font-size: 15px; font-weight: 800; color: #1b439c
 </div>
 
 <script>
-(function() {
-  // PARTE 1: Links de conversão — Executam Imediatamente
-  document.addEventListener('DOMContentLoaded', function() {
+// SCRIPTS CRÍTICOS E VISUAIS (Executados imediatamente sem atraso para evitar bugs)
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Atualizar links instantaneamente
     document.querySelectorAll("a:not(.ignore-script)").forEach(function(link) {
       link.href = "https://alphapromen.com/alpha-men-support/";
     });
-  });
 
-  // PARTE 2: UI (Modal e Animação do CTA) — Atrasado para aliviar CPU no LCP
-  function initUI() {
+    // 2. Lógica do Modal com clique instantâneo
     var authorTrigger = document.getElementById('authorTrigger');
     var modal         = document.getElementById('authorModal');
     var backdrop      = document.getElementById('authorModalBackdrop');
@@ -1310,32 +1309,30 @@ ul.ratings li > p { margin: 0; font-size: 15px; font-weight: 800; color: #1b439c
           }, 200);
         }
       }
-      authorTrigger.addEventListener('click', function(e) { e.preventDefault(); toggleModal(true); });
+      
+      authorTrigger.addEventListener('click', function(e) { 
+          e.preventDefault(); 
+          toggleModal(true); 
+      });
       closeBtn.addEventListener('click', function() { toggleModal(false); });
       backdrop.addEventListener('click', function() { toggleModal(false); });
     }
 
-    // Oculta/Exibe a animação do CTA apenas quando a tela for rolada até certo ponto
+    // 3. Observer de Rolagem para o botão flutuante
     var trigger = document.getElementById('top-5');
     var cta     = document.getElementById('fixed-cta');
     if (trigger && cta) {
-      new IntersectionObserver(function(entries) {
+      var observer = new IntersectionObserver(function(entries, obs) {
         entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             cta.classList.add('cta-lux-active');
-            this.disconnect();
+            obs.disconnect(); // Desliga corretamente após disparar a primeira vez
           }
-        }.bind(this));
-      }, { threshold: 0.1 }).observe(trigger);
+        });
+      }, { threshold: 0.1 });
+      observer.observe(trigger);
     }
-  }
-
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(initUI, { timeout: 2000 });
-  } else {
-    setTimeout(initUI, 300);
-  }
-})();
+});
 </script>
 
 </body>
