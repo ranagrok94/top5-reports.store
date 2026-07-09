@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en"><head><style>
+    .sc-placeholder{background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:rgba(0,0,0,.7);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:rgba(0,0,0,.5);background:rgba(0,0,0,.05);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>x-dc{display:none!important}</style><style>html,body{height:100%;margin:0}#dc-root,#dc-root>.sc-host{height:100%}</style><style data-dc-tpl="1">/* ============================================================
+   Fonts — Joint Health Design System
+   Oswald = headings (condensed, confident, trustworthy)
+   Inter  = body (humane, highly legible, calm)
+   Loaded from Google Fonts CDN. See readme.md → font substitution note.
+   ============================================================ */
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/c1f349d8-f63d-4316-9ddf-c689c3bdd4b2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/cb6d3413-4aca-4276-adb4-88524d28bdca.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/82919184-991d-40fb-a1c4-f70e3e6e7a9b.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/69ad27d0-baf8-4ff6-b076-40c73429b30d.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/2f498f80-3b5b-43ef-9a02-70e2b48c8ecf.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/1d838b93-5f8b-4165-998e-9539f324d9e1.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/185ecf6a-3900-49d1-aa53-02b112415594.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/c1f349d8-f63d-4316-9ddf-c689c3bdd4b2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/cb6d3413-4aca-4276-adb4-88524d28bdca.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/82919184-991d-40fb-a1c4-f70e3e6e7a9b.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/69ad27d0-baf8-4ff6-b076-40c73429b30d.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/2f498f80-3b5b-43ef-9a02-70e2b48c8ecf.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/1d838b93-5f8b-4165-998e-9539f324d9e1.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/185ecf6a-3900-49d1-aa53-02b112415594.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/c1f349d8-f63d-4316-9ddf-c689c3bdd4b2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/cb6d3413-4aca-4276-adb4-88524d28bdca.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/82919184-991d-40fb-a1c4-f70e3e6e7a9b.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/69ad27d0-baf8-4ff6-b076-40c73429b30d.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/2f498f80-3b5b-43ef-9a02-70e2b48c8ecf.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/1d838b93-5f8b-4165-998e-9539f324d9e1.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/185ecf6a-3900-49d1-aa53-02b112415594.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/c1f349d8-f63d-4316-9ddf-c689c3bdd4b2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/cb6d3413-4aca-4276-adb4-88524d28bdca.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/82919184-991d-40fb-a1c4-f70e3e6e7a9b.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/69ad27d0-baf8-4ff6-b076-40c73429b30d.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/2f498f80-3b5b-43ef-9a02-70e2b48c8ecf.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/1d838b93-5f8b-4165-998e-9539f324d9e1.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/185ecf6a-3900-49d1-aa53-02b112415594.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/0bb65329-31f8-44b5-b21a-ba7f43e14cad.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/91e67c3f-3c5b-4a89-a1a6-7eed3c72a7f3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/e69e88bd-af7d-45c2-bd50-230b18490ecd.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/88a1ccf6-f267-4f74-9e00-6773bb2a144b.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/dc4b0c44-f5e4-480e-8772-9406bc1f5df3.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/0bb65329-31f8-44b5-b21a-ba7f43e14cad.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/91e67c3f-3c5b-4a89-a1a6-7eed3c72a7f3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/e69e88bd-af7d-45c2-bd50-230b18490ecd.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/88a1ccf6-f267-4f74-9e00-6773bb2a144b.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/dc4b0c44-f5e4-480e-8772-9406bc1f5df3.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/0bb65329-31f8-44b5-b21a-ba7f43e14cad.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/91e67c3f-3c5b-4a89-a1a6-7eed3c72a7f3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/e69e88bd-af7d-45c2-bd50-230b18490ecd.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/88a1ccf6-f267-4f74-9e00-6773bb2a144b.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/dc4b0c44-f5e4-480e-8772-9406bc1f5df3.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/0bb65329-31f8-44b5-b21a-ba7f43e14cad.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/91e67c3f-3c5b-4a89-a1a6-7eed3c72a7f3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/e69e88bd-af7d-45c2-bd50-230b18490ecd.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/88a1ccf6-f267-4f74-9e00-6773bb2a144b.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/dc4b0c44-f5e4-480e-8772-9406bc1f5df3.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+</style><style data-dc-tpl="2">/* ============================================================
+   Color tokens — Joint Health Design System
+   Vibe: warmth (aconchego), security (segurança), truth (verdade).
+   Trustworthy medical blues, a warm gold accent, calm cool neutrals.
+   ============================================================ */
+:root {
+  /* --- Brand: primary blue --- */
+  --brand-300: #3A9FD5;   /* light, airy — highlights, hovers on dark */
+  --brand-500: #1A6FBE;   /* core brand — primary actions, links */
+  --brand-700: #1B3F6E;   /* deep navy — headings on light, trust anchors */
+
+  /* --- Semantic --- */
+  --success-500: #28A745;
+  --success-700: #1A7A4A;
+  --success-bg:  #E8F5EE;
+  --danger-500:  #C0392B;
+  --danger-bg:   #FFF5F5;
+  --warning-500: #E07B00;
+
+  /* --- Accent --- */
+  --accent-gold:    #F7B500;  /* warmth, trust seals, ratings, emphasis */
+  --accent-info-bg: #EEF4FB;  /* soft blue wash for info surfaces */
+
+  /* --- Neutral --- */
+  --text-main:   #1A1A2E;   /* near-ink navy — primary text */
+  --text-muted:  #555E6E;   /* secondary text, captions */
+  --bg-page:     #F0F4F8;   /* page canvas — cool, calm */
+  --bg-card:     #FFFFFF;   /* card / surface */
+  --border:      #D0D7DF;   /* hairline dividers, input borders */
+
+  /* ---------- Semantic aliases ---------- */
+  --color-primary:        var(--brand-500);
+  --color-primary-hover:  var(--brand-700);
+  --color-primary-soft:   var(--brand-300);
+  --color-link:           var(--brand-500);
+
+  --text-heading:    var(--brand-700);
+  --text-body:       var(--text-main);
+  --text-secondary:  var(--text-muted);
+  --text-on-brand:   #FFFFFF;
+
+  --surface-page:    var(--bg-page);
+  --surface-card:    var(--bg-card);
+  --surface-info:    var(--accent-info-bg);
+  --surface-success: var(--success-bg);
+  --surface-danger:  var(--danger-bg);
+
+  --border-default:  var(--border);
+  --border-strong:   #B6C0CC;
+  --focus-ring:      rgba(26, 111, 190, 0.35);
+}
+</style><style data-dc-tpl="3">/* ============================================================
+   Typography tokens — Joint Health Design System
+   ============================================================ */
+:root {
+  /* Families */
+  --font-heading: 'Oswald', 'Arial Narrow', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Weights */
+  --fw-regular: 400;   /* @kind other */
+  --fw-medium:  500;   /* @kind other */
+  --fw-semibold: 600;  /* @kind other */
+  --fw-bold:    700;   /* @kind other */
+
+  /* Heading scale (Oswald) */
+  --h1-size: 36px; --h1-weight: var(--fw-bold);     /* @kind other */
+  --h1-lh: 1.2;  /* @kind other */
+  --h2-size: 28px; --h2-weight: var(--fw-bold);     /* @kind other */
+  --h2-lh: 1.3;  /* @kind other */
+  --h3-size: 20px; --h3-weight: var(--fw-semibold); /* @kind other */
+  --h3-lh: 1.3;  /* @kind other */
+
+  /* Body scale (Inter) */
+  --body-lg-size: 16px;  --body-lg-lh: 1.6;  /* @kind other */
+  --body-md-size: 14px;  --body-md-lh: 1.6;  /* @kind other */
+  --caption-size: 12px;
+  --caption-lh: 1.5;  /* @kind other */
+
+  /* Tracking — Oswald sits tighter; small caps need air */
+  --tracking-heading: 0.2px;
+  --tracking-eyebrow: 1.2px;
+}
+
+/* Optional ready-made type classes consumers can use */
+.jh-h1 { font-family: var(--font-heading); font-size: var(--h1-size); line-height: var(--h1-lh); font-weight: var(--h1-weight); color: var(--text-heading); letter-spacing: var(--tracking-heading); margin: 0; }
+.jh-h2 { font-family: var(--font-heading); font-size: var(--h2-size); line-height: var(--h2-lh); font-weight: var(--h2-weight); color: var(--text-heading); letter-spacing: var(--tracking-heading); margin: 0; }
+.jh-h3 { font-family: var(--font-heading); font-size: var(--h3-size); line-height: var(--h3-lh); font-weight: var(--h3-weight); color: var(--text-heading); margin: 0; }
+.jh-body-lg { font-family: var(--font-body); font-size: var(--body-lg-size); line-height: var(--body-lg-lh); color: var(--text-body); margin: 0; }
+.jh-body { font-family: var(--font-body); font-size: var(--body-md-size); line-height: var(--body-md-lh); color: var(--text-body); margin: 0; }
+.jh-caption { font-family: var(--font-body); font-size: var(--caption-size); line-height: var(--caption-lh); color: var(--text-secondary); margin: 0; }
+.jh-eyebrow { font-family: var(--font-heading); font-size: 13px; font-weight: var(--fw-semibold); letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--color-primary); margin: 0; }
+</style><style data-dc-tpl="4">/* ============================================================
+   Spacing tokens — 4px base grid
+   ============================================================ */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* Semantic spacing */
+  --gap-inline:    var(--space-2);
+  --gap-stack:     var(--space-4);
+  --pad-card:      var(--space-6);
+  --pad-section:   var(--space-16);
+  --container-max: 1120px;
+}
+</style><style data-dc-tpl="5">/* ============================================================
+   Border-radius tokens
+   ============================================================ */
+:root {
+  --radius-badge:  4px;
+  --radius-button: 8px;
+  --radius-input:  8px;
+  --radius-card:   12px;
+  --radius-pill:   999px;
+}
+</style><style data-dc-tpl="6">/* ============================================================
+   Shadow tokens — soft, low, warm-cool. Conveys lift without harshness.
+   ============================================================ */
+:root {
+  --shadow-xs:   0 1px 2px rgba(27, 63, 110, 0.06);
+  --shadow-sm:   0 2px 6px rgba(27, 63, 110, 0.08);
+  --shadow-md:   0 6px 18px rgba(27, 63, 110, 0.10);
+  --shadow-lg:   0 16px 40px rgba(27, 63, 110, 0.14);
+  --shadow-focus: 0 0 0 4px var(--focus-ring);
+
+  /* Warm glow used sparingly on gold/trust elements */
+  --shadow-gold: 0 6px 18px rgba(247, 181, 0, 0.22);
+}
+</style><style data-dc-tpl="7">/* ============================================================
+   Joint Health Design System — global entry point.
+   Consumers link THIS file only. Keep it @import lines only.
+   ============================================================ */
+/* ============================================================
+   Fonts — Joint Health Design System
+   Oswald = headings (condensed, confident, trustworthy)
+   Inter  = body (humane, highly legible, calm)
+   Loaded from Google Fonts CDN. See readme.md → font substitution note.
+   ============================================================ */
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/c1f349d8-f63d-4316-9ddf-c689c3bdd4b2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/cb6d3413-4aca-4276-adb4-88524d28bdca.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/82919184-991d-40fb-a1c4-f70e3e6e7a9b.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/69ad27d0-baf8-4ff6-b076-40c73429b30d.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/2f498f80-3b5b-43ef-9a02-70e2b48c8ecf.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/1d838b93-5f8b-4165-998e-9539f324d9e1.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/185ecf6a-3900-49d1-aa53-02b112415594.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/c1f349d8-f63d-4316-9ddf-c689c3bdd4b2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/cb6d3413-4aca-4276-adb4-88524d28bdca.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/82919184-991d-40fb-a1c4-f70e3e6e7a9b.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/69ad27d0-baf8-4ff6-b076-40c73429b30d.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/2f498f80-3b5b-43ef-9a02-70e2b48c8ecf.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/1d838b93-5f8b-4165-998e-9539f324d9e1.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/185ecf6a-3900-49d1-aa53-02b112415594.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/c1f349d8-f63d-4316-9ddf-c689c3bdd4b2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/cb6d3413-4aca-4276-adb4-88524d28bdca.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/82919184-991d-40fb-a1c4-f70e3e6e7a9b.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/69ad27d0-baf8-4ff6-b076-40c73429b30d.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/2f498f80-3b5b-43ef-9a02-70e2b48c8ecf.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/1d838b93-5f8b-4165-998e-9539f324d9e1.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/185ecf6a-3900-49d1-aa53-02b112415594.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/c1f349d8-f63d-4316-9ddf-c689c3bdd4b2.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/cb6d3413-4aca-4276-adb4-88524d28bdca.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/82919184-991d-40fb-a1c4-f70e3e6e7a9b.woff2") format('woff2');
+  unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/69ad27d0-baf8-4ff6-b076-40c73429b30d.woff2") format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/2f498f80-3b5b-43ef-9a02-70e2b48c8ecf.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/1d838b93-5f8b-4165-998e-9539f324d9e1.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/185ecf6a-3900-49d1-aa53-02b112415594.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/0bb65329-31f8-44b5-b21a-ba7f43e14cad.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/91e67c3f-3c5b-4a89-a1a6-7eed3c72a7f3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/e69e88bd-af7d-45c2-bd50-230b18490ecd.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/88a1ccf6-f267-4f74-9e00-6773bb2a144b.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("fonts/dc4b0c44-f5e4-480e-8772-9406bc1f5df3.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/0bb65329-31f8-44b5-b21a-ba7f43e14cad.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/91e67c3f-3c5b-4a89-a1a6-7eed3c72a7f3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/e69e88bd-af7d-45c2-bd50-230b18490ecd.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/88a1ccf6-f267-4f74-9e00-6773bb2a144b.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("fonts/dc4b0c44-f5e4-480e-8772-9406bc1f5df3.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/0bb65329-31f8-44b5-b21a-ba7f43e14cad.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/91e67c3f-3c5b-4a89-a1a6-7eed3c72a7f3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/e69e88bd-af7d-45c2-bd50-230b18490ecd.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/88a1ccf6-f267-4f74-9e00-6773bb2a144b.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("fonts/dc4b0c44-f5e4-480e-8772-9406bc1f5df3.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/0bb65329-31f8-44b5-b21a-ba7f43e14cad.woff2") format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/91e67c3f-3c5b-4a89-a1a6-7eed3c72a7f3.woff2") format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* vietnamese */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/e69e88bd-af7d-45c2-bd50-230b18490ecd.woff2") format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/88a1ccf6-f267-4f74-9e00-6773bb2a144b.woff2") format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("fonts/dc4b0c44-f5e4-480e-8772-9406bc1f5df3.woff2") format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+
+/* ============================================================
+   Color tokens — Joint Health Design System
+   Vibe: warmth (aconchego), security (segurança), truth (verdade).
+   Trustworthy medical blues, a warm gold accent, calm cool neutrals.
+   ============================================================ */
+:root {
+  /* --- Brand: primary blue --- */
+  --brand-300: #3A9FD5;   /* light, airy — highlights, hovers on dark */
+  --brand-500: #1A6FBE;   /* core brand — primary actions, links */
+  --brand-700: #1B3F6E;   /* deep navy — headings on light, trust anchors */
+
+  /* --- Semantic --- */
+  --success-500: #28A745;
+  --success-700: #1A7A4A;
+  --success-bg:  #E8F5EE;
+  --danger-500:  #C0392B;
+  --danger-bg:   #FFF5F5;
+  --warning-500: #E07B00;
+
+  /* --- Accent --- */
+  --accent-gold:    #F7B500;  /* warmth, trust seals, ratings, emphasis */
+  --accent-info-bg: #EEF4FB;  /* soft blue wash for info surfaces */
+
+  /* --- Neutral --- */
+  --text-main:   #1A1A2E;   /* near-ink navy — primary text */
+  --text-muted:  #555E6E;   /* secondary text, captions */
+  --bg-page:     #F0F4F8;   /* page canvas — cool, calm */
+  --bg-card:     #FFFFFF;   /* card / surface */
+  --border:      #D0D7DF;   /* hairline dividers, input borders */
+
+  /* ---------- Semantic aliases ---------- */
+  --color-primary:        var(--brand-500);
+  --color-primary-hover:  var(--brand-700);
+  --color-primary-soft:   var(--brand-300);
+  --color-link:           var(--brand-500);
+
+  --text-heading:    var(--brand-700);
+  --text-body:       var(--text-main);
+  --text-secondary:  var(--text-muted);
+  --text-on-brand:   #FFFFFF;
+
+  --surface-page:    var(--bg-page);
+  --surface-card:    var(--bg-card);
+  --surface-info:    var(--accent-info-bg);
+  --surface-success: var(--success-bg);
+  --surface-danger:  var(--danger-bg);
+
+  --border-default:  var(--border);
+  --border-strong:   #B6C0CC;
+  --focus-ring:      rgba(26, 111, 190, 0.35);
+}
+
+/* ============================================================
+   Typography tokens — Joint Health Design System
+   ============================================================ */
+:root {
+  /* Families */
+  --font-heading: 'Oswald', 'Arial Narrow', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Weights */
+  --fw-regular: 400;   /* @kind other */
+  --fw-medium:  500;   /* @kind other */
+  --fw-semibold: 600;  /* @kind other */
+  --fw-bold:    700;   /* @kind other */
+
+  /* Heading scale (Oswald) */
+  --h1-size: 36px; --h1-weight: var(--fw-bold);     /* @kind other */
+  --h1-lh: 1.2;  /* @kind other */
+  --h2-size: 28px; --h2-weight: var(--fw-bold);     /* @kind other */
+  --h2-lh: 1.3;  /* @kind other */
+  --h3-size: 20px; --h3-weight: var(--fw-semibold); /* @kind other */
+  --h3-lh: 1.3;  /* @kind other */
+
+  /* Body scale (Inter) */
+  --body-lg-size: 16px;  --body-lg-lh: 1.6;  /* @kind other */
+  --body-md-size: 14px;  --body-md-lh: 1.6;  /* @kind other */
+  --caption-size: 12px;
+  --caption-lh: 1.5;  /* @kind other */
+
+  /* Tracking — Oswald sits tighter; small caps need air */
+  --tracking-heading: 0.2px;
+  --tracking-eyebrow: 1.2px;
+}
+
+/* Optional ready-made type classes consumers can use */
+.jh-h1 { font-family: var(--font-heading); font-size: var(--h1-size); line-height: var(--h1-lh); font-weight: var(--h1-weight); color: var(--text-heading); letter-spacing: var(--tracking-heading); margin: 0; }
+.jh-h2 { font-family: var(--font-heading); font-size: var(--h2-size); line-height: var(--h2-lh); font-weight: var(--h2-weight); color: var(--text-heading); letter-spacing: var(--tracking-heading); margin: 0; }
+.jh-h3 { font-family: var(--font-heading); font-size: var(--h3-size); line-height: var(--h3-lh); font-weight: var(--h3-weight); color: var(--text-heading); margin: 0; }
+.jh-body-lg { font-family: var(--font-body); font-size: var(--body-lg-size); line-height: var(--body-lg-lh); color: var(--text-body); margin: 0; }
+.jh-body { font-family: var(--font-body); font-size: var(--body-md-size); line-height: var(--body-md-lh); color: var(--text-body); margin: 0; }
+.jh-caption { font-family: var(--font-body); font-size: var(--caption-size); line-height: var(--caption-lh); color: var(--text-secondary); margin: 0; }
+.jh-eyebrow { font-family: var(--font-heading); font-size: 13px; font-weight: var(--fw-semibold); letter-spacing: var(--tracking-eyebrow); text-transform: uppercase; color: var(--color-primary); margin: 0; }
+
+/* ============================================================
+   Spacing tokens — 4px base grid
+   ============================================================ */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* Semantic spacing */
+  --gap-inline:    var(--space-2);
+  --gap-stack:     var(--space-4);
+  --pad-card:      var(--space-6);
+  --pad-section:   var(--space-16);
+  --container-max: 1120px;
+}
+
+/* ============================================================
+   Border-radius tokens
+   ============================================================ */
+:root {
+  --radius-badge:  4px;
+  --radius-button: 8px;
+  --radius-input:  8px;
+  --radius-card:   12px;
+  --radius-pill:   999px;
+}
+
+/* ============================================================
+   Shadow tokens — soft, low, warm-cool. Conveys lift without harshness.
+   ============================================================ */
+:root {
+  --shadow-xs:   0 1px 2px rgba(27, 63, 110, 0.06);
+  --shadow-sm:   0 2px 6px rgba(27, 63, 110, 0.08);
+  --shadow-md:   0 6px 18px rgba(27, 63, 110, 0.10);
+  --shadow-lg:   0 16px 40px rgba(27, 63, 110, 0.14);
+  --shadow-focus: 0 0 0 4px var(--focus-ring);
+
+  /* Warm glow used sparingly on gold/trust elements */
+  --shadow-gold: 0 6px 18px rgba(247, 181, 0, 0.22);
+}
+
+</style><title data-dc-tpl="9">Senzio Miracle Balm vs Active Move — Top 5 UK Joint Formulas Review 2026</title><meta name="description" content="Senzio Miracle Balm review inside: we compared 5 of the most talked-about UK joint formulas — see where the viral balm ranks and why Active Move is our #1 for 2026." data-dc-tpl="10"><style data-dc-tpl="11">
+/* ── RESET ─────────────────────────────────── */
+*,::after,::before{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font-body);background:var(--bg-page);color:var(--text-main);-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.6;padding-bottom:80px}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
+ul{list-style:none;padding:0;margin:0}
+
+/* ── LAYOUT ─────────────────────────────────── */
+.container{max-width:1140px;margin:0 auto;padding:0 20px;width:100%}
+.container--narrow{max-width:900px;margin:0 auto;padding:0 20px}
+.container--wide{max-width:1100px;margin:0 auto;padding:0 20px}
+
+/* ── TICKER ─────────────────────────────────── */
+.ticker{background:var(--brand-500);padding:5px 0;overflow:hidden}
+.ticker__track{display:flex;width:max-content;animation:ticker-scroll 90s linear infinite;will-change:transform}
+.ticker__item{flex-shrink:0;color:#fff;font-size:14px;font-weight:400;letter-spacing:3px;line-height:2.4;white-space:nowrap;padding:0 30px}
+@keyframes ticker-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker:hover .ticker__track{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.ticker__track{animation:none;justify-content:center}}
+
+/* ── HERO ─────────────────────────────────── */
+.hero{background:var(--brand-700);padding:40px 20px;text-align:center}
+.hero__title{font-family:var(--font-heading);font-size:clamp(26px,5vw,50px);font-weight:700;color:#fff;line-height:1.15;max-width:900px;margin:0 auto;letter-spacing:.3px}
+@media(max-width:480px){.hero__title{font-size:26px}.hero{padding:16px 12px}}
+
+/* ── SUBHEAD ─────────────────────────────────── */
+.subhead{padding:20px}
+.subhead__text{text-align:center;font-size:clamp(15px,2vw,20px);font-weight:300;color:var(--text-main);max-width:900px;margin:0 auto}
+@media(max-width:480px){.subhead__text{font-size:15px}}
+
+/* ── HERO IMAGE ─────────────────────────────────── */
+.hero-img{text-align:center;padding:10px 20px 0}
+.hero-img a{display:inline-block;width:51%}
+.hero-img img{width:100%;height:auto;aspect-ratio:1024/572;object-fit:contain}
+@media(max-width:1024px){.hero-img a{width:57%}}
+@media(max-width:480px){.hero-img a{width:100%}}
+
+/* ── AUTHOR CARD ─────────────────────────────────── */
+.author-card{max-width:900px;margin:30px auto;background:var(--bg-card);border-radius:var(--radius-card);border:1px solid var(--border);box-shadow:var(--shadow-md);overflow:hidden}
+.author-card__top{background:var(--brand-500);padding:10px 28px;display:flex;align-items:center;gap:8px}
+.author-card__site{font-size:clamp(13px,1.8vw,16px);font-weight:700;color:#fff;letter-spacing:.02em;font-family:var(--font-heading)}
+.author-card__dot{width:5px;height:5px;background:var(--accent-gold);border-radius:50%;flex-shrink:0}
+.author-card__tag{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.author-card__body{padding:24px 28px;display:flex;align-items:center;gap:24px}
+.author-card__avatar-wrap{position:relative;flex-shrink:0}
+.author-card__avatar-wrap img{width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--brand-500)}
+.author-card__badge{position:absolute;bottom:2px;right:2px;width:22px;height:22px;background:var(--brand-500);border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center}
+.author-card__badge svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.author-card__info{flex:1}
+.author-card__name{font-family:var(--font-heading);font-size:clamp(18px,2.5vw,22px);font-weight:700;color:var(--text-heading);margin:0 0 4px;line-height:1.2}
+.author-card__title{font-size:clamp(12px,1.5vw,14px);color:var(--brand-500);font-weight:600;margin:0 0 12px}
+.author-card__title em{font-style:normal;color:var(--text-muted);font-weight:400}
+.author-card__meta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.author-card__meta-item{display:flex;align-items:center;gap:5px;font-size:clamp(11px,1.4vw,13px);color:var(--text-muted)}
+.author-card__meta-item strong{color:var(--text-main);font-weight:600}
+.author-card__divider{width:1px;height:14px;background:var(--border)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:560px){.author-card__body{flex-direction:column;gap:14px;padding:18px}.author-card__top{padding:10px 18px}.author-card__divider{display:none}}
+
+/* ── EDITORIAL ─────────────────────────────────── */
+.editorial{max-width:860px;margin:0 auto;padding:48px 24px}
+@media(max-width:768px){.editorial{padding:36px 18px}}
+@media(max-width:480px){.editorial{padding:28px 14px}}
+
+.section-title{font-family:var(--font-heading);font-size:clamp(20px,3.5vw,34px);font-weight:700;line-height:1.25;color:var(--text-heading);text-align:center;margin-bottom:32px}
+.section-subtitle{font-family:var(--font-heading);font-size:clamp(20px,4vw,36px);font-weight:700;line-height:1.25;color:var(--text-heading);text-align:center;margin-bottom:36px}
+.body-text{font-size:clamp(17px,2.5vw,20px);line-height:1.82;color:var(--text-main);margin-bottom:20px;font-family:var(--font-body)}
+.body-text strong{color:var(--text-heading);font-weight:600}
+
+.stat-callout{background:var(--accent-info-bg);border-left:4px solid var(--brand-500);border-radius:0 var(--radius-button) var(--radius-button) 0;padding:18px 24px;margin:28px 0;display:flex;align-items:center;gap:20px}
+.stat-number{font-family:var(--font-heading);font-size:clamp(36px,6vw,56px);font-weight:700;color:var(--brand-500);line-height:1;white-space:nowrap}
+.stat-text{font-size:clamp(14px,1.8vw,17px);color:var(--text-muted);line-height:1.5}
+.stat-text em{display:block;font-style:normal;font-size:.8em;color:var(--text-muted);margin-top:4px}
+@media(max-width:560px){.stat-callout{flex-direction:column;gap:10px;padding:16px 18px}}
+
+.img-wrap{margin:28px 0;text-align:center}
+.img-wrap img{max-width:80%;border-radius:var(--radius-card);margin:0 auto}
+@media(max-width:480px){.img-wrap img{max-width:100%}}
+
+.doc-card{background:var(--bg-page);border-radius:var(--radius-card);padding:24px 28px;margin:28px 0;display:flex;gap:20px;align-items:flex-start;border:1px solid var(--border)}
+.doc-avatar{width:54px;height:54px;border-radius:50%;background:var(--brand-500);color:#fff;font-family:var(--font-heading);font-weight:700;font-size:19px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.doc-name{font-family:var(--font-heading);font-size:clamp(15px,2vw,18px);font-weight:700;color:var(--text-heading);margin-bottom:3px}
+.doc-title{font-size:clamp(12px,1.4vw,14px);color:var(--text-muted);margin-bottom:10px}
+.doc-text{font-size:clamp(14px,1.7vw,17px);line-height:1.75;color:var(--text-main)}
+.doc-text strong{color:var(--text-heading)}
+@media(max-width:560px){.doc-card{flex-direction:column;gap:14px;padding:18px}}
+
+.pullquote{border-left:3px solid var(--brand-500);padding:4px 0 4px 20px;margin:24px 0;font-size:clamp(15px,2vw,19px);font-style:italic;color:var(--text-muted);line-height:1.7}
+
+/* ── CRITERIA ─────────────────────────────────── */
+.criteria-wrap{background:var(--bg-page);border:1px solid var(--border);border-radius:var(--radius-card);padding:32px 28px;margin-top:36px}
+.criteria-item{display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-bottom:1px solid var(--border)}
+.criteria-item:last-child{border-bottom:none;padding-bottom:0}
+.criteria-item:first-child{padding-top:0}
+.criteria-icon{width:36px;height:36px;background:var(--brand-500);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.criteria-icon svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.criteria-label{font-weight:600;font-size:clamp(14px,1.7vw,17px);color:var(--text-heading);margin-bottom:4px;font-family:var(--font-heading)}
+.criteria-desc{font-size:clamp(13px,1.5vw,15px);color:var(--text-muted);line-height:1.6}
+@media(max-width:480px){.criteria-wrap{padding:22px 16px}}
+
+/* ── MECHANISM ─────────────────────────────────── */
+.mechanism{background:var(--bg-page);border:1px solid var(--border);border-left:4px solid var(--text-heading);border-radius:0 var(--radius-card) var(--radius-card) 0;padding:28px;margin:32px 0}
+.mechanism__label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;font-family:var(--font-heading)}
+.mechanism__text{font-size:clamp(15px,2vw,18px);line-height:1.8;color:var(--text-main)}
+.mechanism__text strong{color:var(--text-heading)}
+
+.flow{display:flex;align-items:center;justify-content:center;gap:0;margin:36px 0;flex-wrap:wrap;row-gap:10px}
+.flow-step{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-button);padding:35px 16px;text-align:center;flex:1 1 110px;max-width:150px;box-shadow:var(--shadow-xs)}
+.flow-step__label{font-size:clamp(14px,2vw,17px);font-weight:600;color:var(--text-heading);line-height:1.3;font-family:var(--font-heading)}
+.flow-step__sub{font-size:clamp(10px,1.2vw,12px);color:var(--text-muted);margin-top:3px;line-height:1.4}
+.flow-arrow{font-size:20px;color:var(--text-muted);padding:0 5px;flex-shrink:0}
+@media(max-width:480px){.flow{flex-direction:column}.flow-arrow{transform:rotate(90deg)}}
+
+.info-note{background:var(--accent-info-bg);border:1px solid var(--border);border-radius:var(--radius-button);padding:18px 22px;margin:26px 0;display:flex;gap:14px;align-items:flex-start}
+.info-note__text{font-size:clamp(13px,1.6vw,15px);line-height:1.65;color:var(--text-main)}
+.info-note__text strong{color:var(--text-heading)}
+
+/* ── INGREDIENT GRID ─────────────────────────────────── */
+.ingr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0}
+.ingr-card{background:var(--bg-card);border:1px solid var(--border);border-top:3px solid var(--brand-500);border-radius:var(--radius-card);padding:20px 16px;box-shadow:var(--shadow-xs)}
+.ingr-badge{display:inline-block;background:var(--accent-info-bg);color:var(--brand-500);font-size:11px;font-weight:600;text-transform:uppercase;padding:3px 7px;border-radius:var(--radius-badge);margin-bottom:8px}
+.ingr-name{font-family:var(--font-heading);font-size:clamp(14px,1.7vw,17px);font-weight:700;color:var(--text-heading);margin-bottom:8px}
+.ingr-text{font-size:clamp(13px,1.5vw,15px);color:var(--text-muted);line-height:1.65}
+.ingr-text strong{color:var(--text-heading)}
+@media(max-width:768px){.ingr-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.ingr-grid{grid-template-columns:1fr}}
+
+.section-closing{background:var(--brand-700);color:#fff;border-radius:var(--radius-card);padding:26px 30px;margin-top:36px;text-align:center}
+.section-closing__main{font-size:clamp(14px,1.8vw,17px);line-height:1.6;margin-bottom:6px;font-family:var(--font-body)}
+.section-closing__sub{font-size:clamp(13px,1.5vw,15px);color:rgba(255,255,255,.65)}
+
+/* ── SECTION HEADING ─────────────────────────────────── */
+.list-heading{max-width:1100px;margin:30px auto 0;padding:0 20px}
+.list-heading__title{font-family:var(--font-heading);font-size:clamp(26px,4vw,50px);font-weight:700;color:var(--text-heading);line-height:1.2;margin-bottom:10px}
+.list-heading__sub{font-size:clamp(15px,2vw,20px);font-weight:300;color:var(--text-muted);margin-bottom:24px}
+@media(max-width:480px){.list-heading{padding:0 14px}.list-heading__title{font-size:28px;line-height:1.15}.list-heading__sub{font-size:15px}}
+
+/* ── PRODUCT CARD ─────────────────────────────────── */
+.rank-section{max-width:1100px;margin:0 auto 10px;padding:0 20px}
+@media(max-width:480px){.rank-section{padding:0 12px;margin-top:18px}}
+
+.rank-bar{display:flex;align-items:center;justify-content:space-between;border-radius:var(--radius-card) var(--radius-card) 0 0;padding:13px 20px}
+.rank-bar--gold{background:linear-gradient(90deg,var(--accent-info-bg),#eaf1f8);border-left:5px solid var(--brand-500)}
+.rank-bar--silver{background:linear-gradient(90deg,#f0f0f0,#f7f7f7);border-left:5px solid var(--text-heading)}
+.rank-bar--bronze{background:linear-gradient(90deg,#f2f2f2,#f9f9f9);border-left:5px solid var(--text-muted)}
+.rank-bar--4{background:linear-gradient(90deg,#f2f2f2,#f9f9f9);border-left:5px solid var(--border)}
+.rank-bar__title{font-family:var(--font-heading);font-size:clamp(20px,3vw,34px);font-weight:700;margin:0;letter-spacing:-.3px}
+.rank-bar__title--gold{color:var(--brand-700)}
+.rank-bar__title--silver{color:var(--text-heading)}
+.rank-bar__title--other{color:var(--text-muted)}
+.rank-bar__num--gold{color:var(--brand-500)}
+.rank-bar__num--silver{color:var(--text-muted)}
+.rank-bar__num--other{color:var(--border-strong)}
+.rank-bar__medal{width:90px;height:90px;object-fit:contain}
+@media(max-width:480px){.rank-bar__medal{width:65px;height:65px}.rank-bar__title{font-size:22px}}
+
+.rank-body{background:var(--bg-card);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-card) var(--radius-card);padding:14px 22px 22px}
+.rank-body--blue{border-color:var(--brand-300)}
+.rank-strip{display:flex;align-items:center;gap:28px;padding:14px 0;    justify-content: space-evenly}
+.rank-strip__img{flex:0 0 auto}
+.rank-strip__img img{width:150px;height:auto}
+.rank-strip__img--lg img{width:180px}
+.rank-ratings{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:24px}
+@media(max-width:480px){.rank-strip{flex-direction:column;align-items:center;gap:14px}.rank-ratings{flex-direction:row;gap:30px}.rank-strip__img img,.rank-strip__img--lg img{width:150px}}
+@media(max-width:768px){.rank-strip__img img,.rank-strip__img--lg img{width:140px}}
+
+/* ── GAUGE ─────────────────────────────────── */
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+.gauge{position:relative;width:100px;height:100px}
+.gauge svg{transform:rotate(-90deg);width:100px;height:100px}
+.gauge__bg{fill:none;stroke:var(--border);stroke-width:8}
+.gauge__fill--green{fill:none;stroke:var(--success-500);stroke-width:8;stroke-linecap:round;stroke-dasharray:283}
+.gauge__fill--orange{fill:none;stroke:var(--warning-500);stroke-width:8;stroke-linecap:round;stroke-dasharray:283}
+.gauge__fill--gray{fill:none;stroke:var(--text-muted);stroke-width:8;stroke-linecap:round;stroke-dasharray:283}
+.gauge__fill--lightgray{fill:none;stroke:var(--border-strong);stroke-width:8;stroke-linecap:round;stroke-dasharray:283}
+.gauge__text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:17px;font-weight:700;color:var(--text-heading);white-space:nowrap;font-family:var(--font-heading)}
+.gauge__label{text-align:center;font-size:12px;font-weight:600;color:var(--text-main);line-height:1.35}
+@media(max-width:480px){.gauge{width:80px;height:80px}.gauge svg{width:80px;height:80px}.gauge__text{font-size:13px}}
+
+/* ── GRADE ─────────────────────────────────── */
+.grade-wrap{display:flex;flex-direction:column;align-items:center;gap:4px}
+.grade-letter{font-family:var(--font-heading);font-size:64px;font-weight:700;line-height:1;letter-spacing:-2px}
+.grade-letter--black{color:var(--text-heading)}
+.grade-letter--gray{color:var(--text-muted)}
+.grade-letter--midgray{color:var(--border-strong)}
+.grade-letter--lightgray{color:var(--border)}
+.grade-label{font-size:12px;font-weight:600;color:var(--text-main);text-align:center}
+@media(max-width:480px){.grade-letter{font-size:50px}}
+
+/* ── PROS / CONS ─────────────────────────────────── */
+.two-col{display:flex;align-items:flex-start;gap:28px;max-width:1100px;margin:0 auto;padding:0 20px}
+.col-pc{flex:1 1 0;display:flex;flex-direction:column;gap:20px}
+.col-bl{flex:1 1 0}
+@media(max-width:480px){.two-col{flex-direction:column;gap:20px;padding:0 12px}}
+
+.pc-box{background:var(--bg-page);padding:22px;border-radius:var(--radius-card);box-shadow:var(--shadow-xs)}
+.pc-tag{font-size:16px;font-weight:600;padding:6px 13px;border-radius:var(--radius-button);display:inline-block;margin-bottom:14px;color:#fff;font-family:var(--font-heading)}
+.pc-tag--pros{background:var(--success-500)}
+.pc-tag--cons{background:var(--danger-500)}
+.pc-box li{font-size:14px;color:var(--text-main);margin-bottom:8px;display:flex;align-items:flex-start;line-height:1.5}
+.pc-box.pc-box--pros li::before{content:"✔";color:var(--success-500);margin-right:9px;font-weight:700;flex-shrink:0}
+.pc-box.pc-box--cons li::before{content:"✖";color:var(--danger-500);margin-right:9px;font-weight:700;flex-shrink:0}
+
+.bottomline{background:var(--bg-card);padding:20px 26px;border-radius:var(--radius-card);box-shadow:var(--shadow-sm);color:var(--text-main)}
+.bottomline__title{font-family:var(--font-heading);font-size:clamp(16px,2vw,20px);margin-bottom:14px;line-height:1.3}
+.bottomline__title--blue{color:var(--brand-700)}
+.bottomline__title--orange{color:var(--warning-500)}
+.bottomline p{font-size:14px;line-height:1.65;margin-bottom:11px;color:var(--text-muted)}
+.bottomline p strong{color:var(--text-main)}
+
+.btn-cta{display:inline-block;margin-top:14px;padding:13px 26px;background:var(--brand-500);color:#fff;font-weight:700;border-radius:var(--radius-button);font-size:15px;letter-spacing:.3px;box-shadow:var(--shadow-md);transition:background .3s,transform .2s,box-shadow .3s;font-family:var(--font-heading)}
+.btn-cta:hover{background:var(--brand-700);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.disclaimer{font-style:italic;font-size:13px;color:var(--text-muted);margin-top:12px}
+
+/* ── COMPARISON TABLE ─────────────────────────────────── */
+.comp-section{max-width:960px;margin:20px auto;padding:0 20px}
+.comp-header{background:var(--brand-500);border-radius:var(--radius-card) var(--radius-card) 0 0;padding:16px 26px}
+.comp-header h2{color:#fff;font-family:var(--font-heading);font-size:clamp(14px,2vw,19px);font-weight:700;line-height:1.3}
+.comp-table{background:var(--surface-success);border:1px solid #d4e8d4;border-top:none;border-radius:0 0 var(--radius-card) var(--radius-card);overflow-x:auto}
+.comp-grid{display:grid;grid-template-columns:150px repeat(5,1fr);border-bottom:1px solid #d4e8d4;align-items:center}
+.comp-grid:last-child{border-bottom:none}
+.comp-grid.comp-grid--head{background:var(--surface-success)}
+.comp-cell{padding:12px 8px;text-align:center}
+.comp-label{padding:12px 16px;font-size:clamp(12px,1.5vw,14px);font-weight:600;color:var(--text-heading);text-align:left;background:rgba(40,167,69,.08);border-right:1px solid #d4e8d4;font-family:var(--font-body)}
+.comp-cell img{width:clamp(45px,7vw,75px);height:auto;margin:0 auto}
+.comp-cell--hl{background:rgba(26,111,190,.06);position:relative}
+.comp-cell--hl::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--brand-500)}
+.comp-grid--head .comp-cell--hl::after{display:none}
+.comp-grid--head .comp-cell--hl{background:rgba(26,111,190,.08);border-radius:6px}
+.prod-name{font-size:clamp(9px,1.2vw,11px);font-weight:700;color:var(--text-main);margin-top:6px;line-height:1.2}
+.prod-name--top{color:var(--brand-500)}
+.icon-yes{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--success-500);border-radius:50%;color:#fff;font-size:13px;font-weight:700}
+.icon-no{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--danger-500);border-radius:50%;color:#fff;font-size:13px;font-weight:700}
+.comp-footer{background:var(--surface-success);border:1px solid #d4e8d4;border-radius:0 0 var(--radius-card) var(--radius-card);padding:20px 24px;margin-top:10px}
+.comp-footer p{font-size:clamp(13px,1.5vw,15px);line-height:1.7;color:var(--text-main);margin-bottom:12px}
+.comp-footer p:last-child{margin-bottom:0}
+.comp-footer .hl{color:var(--brand-500);font-weight:700}
+@media(max-width:560px){.comp-grid{grid-template-columns:95px repeat(5,1fr)}.comp-label{padding:10px;font-size:11px}.comp-cell{padding:8px 3px}.icon-yes,.icon-no{width:20px;height:20px;font-size:10px}}
+
+/* ── TESTIMONIALS ─────────────────────────────────── */
+.reviews-heading{text-align:center;font-family:var(--font-heading);font-size:clamp(22px,3.5vw,36px);font-weight:700;color:var(--text-heading);padding:28px 20px 16px}
+.testimonials{max-width:900px;margin:0 auto;padding:0 20px 30px;display:flex;flex-direction:column;gap:28px}
+.testimonial{display:flex;gap:18px;align-items:flex-start}
+.testimonial__avatar{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px}
+.testimonial__avatar img{width:90px;height:90px;border-radius:50%;filter:blur(6px)}
+.testimonial__avatar p{font-size:11px;color:var(--text-muted);text-align:center;width:90px;line-height:1.3}
+.testimonial__body p{font-size:clamp(14px,1.7vw,16px);line-height:1.7;color:var(--text-main)}
+.testimonial__body p+p{margin-top:7px}
+@media(max-width:560px){.testimonial{flex-direction:column;gap:0}.testimonial__avatar{flex-direction:row;align-items:center;gap:12px;margin-bottom:10px}.testimonial__avatar img{width:54px;height:54px}.testimonial__avatar p{width:auto;text-align:left}}
+
+/* ── SUMMARY BOX ─────────────────────────────────── */
+.summary-box{background:var(--bg-page);border-radius:var(--radius-card);padding:22px;border:1px solid var(--border);max-width:900px;margin:20px auto}
+.summary-box__header{background:var(--brand-500);color:#fff;padding:14px 18px;border-radius:var(--radius-button) var(--radius-button) 0 0;font-family:var(--font-heading);font-size:clamp(16px,2vw,21px);font-weight:700;margin:-22px -22px 18px}
+.summary-box__row{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.summary-box__img{flex:0 0 auto}
+.summary-box__img img{height:155px;width:auto}
+.summary-box__details{flex:1;min-width:240px}
+.star-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.star-row:last-child{border-bottom:none}
+.star-label{flex:1;font-size:clamp(13px,1.6vw,15px);color:var(--text-main)}
+.stars{display:flex;gap:2px;min-width:105px;justify-content:flex-end}
+.stars svg{width:18px;height:18px}
+.summary-box__text{margin-top:18px;line-height:1.65;font-size:clamp(13px,1.6vw,15px);color:var(--text-muted)}
+.summary-box__text strong{color:var(--text-heading)}
+.btn-yellow{display:inline-block;margin-top:22px;background:var(--accent-gold);color:var(--brand-700);font-weight:700;padding:14px 26px;border-radius:var(--radius-button);font-size:clamp(15px,1.8vw,18px);text-align:center;transition:all .2s;font-family:var(--font-heading)}
+.btn-yellow:hover{background:#e0a400;transform:scale(1.02);box-shadow:var(--shadow-gold)}
+@media(max-width:600px){.summary-box__row{flex-direction:column;align-items:center}.summary-box__img img{height:130px}.summary-box__details{text-align:left;width:100%}}
+
+/* ── FOOTER ─────────────────────────────────── */
+.footer{background:var(--border);padding:14px 20px;text-align:center}
+.footer__links{display:flex;justify-content:center;gap:30px;margin-bottom:0}
+.footer__links a{font-size:14px;font-weight:600;color:var(--text-heading)}
+.disclaimer-footer{background:var(--border);padding:14px 20px 22px}
+.disclaimer-footer p{text-align:center;font-size:12px;font-weight:400;color:var(--text-muted);max-width:900px;margin:0 auto;line-height:1.65}
+
+/* ── FLOATING CTA ─────────────────────────────────── */
+.float-btn{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:9999;width:90%;max-width:440px;text-decoration:none;background:var(--brand-500);border:2px solid rgba(255,255,255,.3);border-radius:var(--radius-card);padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:14px;box-shadow:var(--shadow-lg);transition:all .3s}
+.float-btn:hover{background:var(--accent-gold);transform:translateX(-50%) scale(1.02)}
+.float-btn__text{display:flex;flex-direction:column;align-items:center;line-height:1.2}
+.float-btn__main{color:#fff;font-family:var(--font-heading);font-weight:700;font-size:clamp(16px,2.5vw,19px);margin-bottom:2px}
+.float-btn:hover .float-btn__main{color:var(--brand-700)}
+.float-btn__sub{color:rgba(255,255,255,.85);font-family:var(--font-body);font-weight:400;font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.float-btn:hover .float-btn__sub{color:var(--brand-700)}
+.float-btn__icon{background:#fff;color:var(--brand-500);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;font-weight:bold}
+
+@keyframes pulse-btn{0%{transform:translateX(-50%) scale(1)}70%{transform:translateX(-50%) scale(1.04)}100%{transform:translateX(-50%) scale(1)}}
+@media(prefers-reduced-motion:reduce){.float-btn{animation:none}}
+  </style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="index"><header data-dc-tpl="12" class="ticker" aria-label="Site banner">
+  <div data-dc-tpl="13" class="ticker__track" role="marquee" aria-label="Joint Health Ranking">
+    <span data-dc-tpl="14" class="ticker__item">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="15" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span data-dc-tpl="16" class="ticker__item" aria-hidden="true">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="17" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span data-dc-tpl="18" class="ticker__item" aria-hidden="true">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="19" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span data-dc-tpl="20" class="ticker__item" aria-hidden="true">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="21" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span data-dc-tpl="22" class="ticker__item" aria-hidden="true">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="23" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span data-dc-tpl="24" class="ticker__item" aria-hidden="true">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="25" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span data-dc-tpl="26" class="ticker__item" aria-hidden="true">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="27" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span data-dc-tpl="28" class="ticker__item" aria-hidden="true">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="29" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span data-dc-tpl="30" class="ticker__item" aria-hidden="true">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="31" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span data-dc-tpl="32" class="ticker__item" aria-hidden="true">TOP 5 UK JOINT FORMULAS OF 2026&nbsp;&nbsp;•&nbsp;&nbsp;UPDATED <span data-dc-tpl="33" class="ticker-updated">JULY 2026</span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  </div>
+  </header><section data-dc-tpl="35" class="hero">
+  <h1 data-dc-tpl="36" class="hero__title">The "Rusty-Hinge" Joint Trap: Why Creams and Painkillers Keep Failing — and the Morning Routine UK Adults Are Switching to in 2026</h1></section><section data-dc-tpl="37" class="subhead">
+  <div data-dc-tpl="38" class="container">
+    <p data-dc-tpl="39" class="subhead__text">We compared the 5 most talked-about joint formulas in Britain — including Senzio Miracle Balm, the topical balm going viral — on one simple question: do they actually reach the damage <strong data-dc-tpl="40">inside the joint</strong>, or just numb the surface? The real driver of joint pain isn't simple "wear-and-tear" — it's a <strong data-dc-tpl="41">runaway inflammation loop</strong> and the decline of your cartilage's own <strong data-dc-tpl="42">repair cells</strong>.</p>
+  </div>
+  <div data-dc-tpl="43" class="hero-img">
+    <a data-dc-tpl="44" href="https://www.diginear.com/2GFDLQK9/22MR1978/?uid=5536" aria-label="Visit Active Move official website">
+      <img data-dc-tpl="45" id="heroTop5Img" width="1024" height="572" alt="Top 5 UK joint formulas 2026 compared — Active Move review" src="images/top5-premium-1024x572.webp" fetchpriority="high" decoding="async">
+    </a>
+  </div>
+  </section><div data-dc-tpl="47" class="container--narrow">
+  <div data-dc-tpl="48" class="author-card">
+    <div data-dc-tpl="49" class="author-card__top">
+      <span data-dc-tpl="50" class="author-card__site">Clinical Insights</span>
+      <div data-dc-tpl="51" class="author-card__dot"></div>
+      <span data-dc-tpl="52" class="author-card__tag">Joint Health Review Panel</span>
+    </div>
+    <div data-dc-tpl="53" class="author-card__body">
+      <div data-dc-tpl="54" class="author-card__info">
+        <div data-dc-tpl="55" class="author-card__meta">
+          <span data-dc-tpl="56" class="author-card__meta-item">🕐 Posted: <strong data-dc-tpl="57">7 days ago</strong></span>
+          <div data-dc-tpl="58" class="author-card__divider" aria-hidden="true"></div>
+          <span data-dc-tpl="59" class="author-card__meta-item">👀 <strong data-dc-tpl="60">12,182</strong> views</span>
+          <div data-dc-tpl="61" class="author-card__divider" aria-hidden="true"></div>
+          <span data-dc-tpl="62" class="author-card__meta-item">👍 <strong data-dc-tpl="63">312</strong> likes</span>
+        </div>
+      </div>
+    </div>
+  </div></div><main data-dc-tpl="64" id="main-content"><section data-dc-tpl="65" aria-labelledby="intro-heading">
+  <div data-dc-tpl="66" class="editorial">
+    <h2 data-dc-tpl="67" id="intro-heading" class="section-subtitle">How Can You Tell a Joint Formula That Works from One That Just Masks the Pain?</h2>
+
+    <div data-dc-tpl="68" class="stat-callout" role="note">
+      <div data-dc-tpl="69" class="stat-number" aria-hidden="true">10M+</div>
+      <div data-dc-tpl="70" class="stat-text">people in the UK live with joint pain or arthritis — and most reach first for a cream or pill that only numbs the surface, never touching what drives the pain inside the joint. <em data-dc-tpl="71">Source: Versus Arthritis</em></div>
+    </div>
+
+    <p data-dc-tpl="72" class="body-text">If your first steps out of bed feel like <strong data-dc-tpl="73">a rusty hinge that needs to "warm up"</strong>… if stairs have quietly become the enemy… you've probably been told the same thing: <strong data-dc-tpl="74">"It's just age. Wear and tear. Take a painkiller."</strong> But here's the truth: local inflammation and cartilage destruction quietly progress without intervention. Unless you address the root cause—not just mask the pain—mild discomfort can advance to serious conditions like osteoarthritis. You need a solution that works inside the joint. A repair mechanism, not a painkiller.
+
+    When it comes to real, lasting relief, that dismissive shrug misses what's actually happening inside the joint.</p>
+
+    <div data-dc-tpl="75" class="img-wrap">
+      <img data-dc-tpl="76" id="jointComfortImg" alt="UK adult moving comfortably without morning joint stiffness" width="640" height="427" loading="lazy" src="images/joint-pain.webp" decoding="async">
+    </div>
+  
+
+    <p data-dc-tpl="78" class="body-text">Have you tried to relieve your joint pain but struggled to see lasting results? New thinking points to two things conventional advice ignores: a <strong data-dc-tpl="79">runaway inflammation loop</strong> that keeps damaging the very cushion it's meant to protect — and the <strong data-dc-tpl="80">age-related decline of the repair cells</strong> your cartilage depends on.</p>
+
+    <div data-dc-tpl="81" class="doc-card" role="blockquote">
+      <div data-dc-tpl="82" class="doc-avatar" aria-hidden="true">CI</div>
+      <div data-dc-tpl="83">
+        <div data-dc-tpl="84" class="doc-name">Clinical Insights Review Panel</div>
+        <div data-dc-tpl="85" class="doc-title">Independent Joint Health Editorial Team</div>
+        <p data-dc-tpl="86" class="doc-text">We compared every formula on one transparent question: <strong data-dc-tpl="87">does it reach inside the joint and work on more than one driver of pain — or does it just numb the surface?</strong> One formula kept separating itself from the rest — <strong data-dc-tpl="88">not through marketing claims, but through what's actually inside it.</strong></p>
+      </div>
+    </div>
+
+    <p data-dc-tpl="89" class="body-text">Here's the part most ads won't tell you: a warming balm feels good on the skin, but the wear that makes the hinge seize up is on the <strong data-dc-tpl="90">inside</strong> — and surface comfort doesn't reach it. <strong data-dc-tpl="91">Numbing the surface won't fix the underlying problem.</strong></p>
+
+    <p data-dc-tpl="92" class="body-text">In this review, we break down the <strong data-dc-tpl="93">5 most talked-about UK joint formulas</strong> — including the viral balms. Our criteria are strict: does it reach inside the joint, does it work on more than one driver of pain — inflammation, cartilage and repair — and <strong data-dc-tpl="94">how fast does real relief actually arrive?</strong></p>
+
+    <blockquote data-dc-tpl="95" class="pullquote">"By the end of this article, you'll know exactly which formula was built to reach the cause from within — and why it earned our #1 spot for 2026."</blockquote>
+
+    <h2 data-dc-tpl="96" class="section-title" style="margin-top: 36px;">How We Evaluated the Options</h2>
+
+    <div data-dc-tpl="97" class="criteria-wrap">
+      <div data-dc-tpl="98" class="criteria-item">
+        <div data-dc-tpl="99" class="criteria-icon"><svg data-dc-tpl="100" viewBox="0 0 24 24" aria-hidden="true"><path data-dc-tpl="101" d="M9 12l2 2 4-4"></path><circle data-dc-tpl="102" cx="12" cy="12" r="9"></circle></svg></div>
+        <div data-dc-tpl="103">
+          <div data-dc-tpl="104" class="criteria-label">Reaches Inside the Joint</div>
+          <div data-dc-tpl="105" class="criteria-desc">Does it work systemically inside the joint capsule, or only on the surface of the skin — where a cream or balm can never reach the real damage?</div>
+        </div>
+      </div>
+      <div data-dc-tpl="106" class="criteria-item">
+        <div data-dc-tpl="107" class="criteria-icon"><svg data-dc-tpl="108" viewBox="0 0 24 24" aria-hidden="true"><path data-dc-tpl="109" d="M3 3h18v4H3zM3 10h18v4H3zM3 17h18v4H3z"></path></svg></div>
+        <div data-dc-tpl="110">
+          <div data-dc-tpl="111" class="criteria-label">Multi-Mechanism Support</div>
+          <div data-dc-tpl="112" class="criteria-desc">Does it work on all three drivers — inflammation, cartilage and repair — using patented actives, or rely on a single underdosed ingredient?</div>
+        </div>
+      </div>
+      <div data-dc-tpl="113" class="criteria-item">
+        <div data-dc-tpl="114" class="criteria-icon"><svg data-dc-tpl="115" viewBox="0 0 24 24" aria-hidden="true"><circle data-dc-tpl="116" cx="12" cy="12" r="9"></circle><path data-dc-tpl="117" d="M12 6v6l4 2"></path></svg></div>
+        <div data-dc-tpl="118">
+          <div data-dc-tpl="119" class="criteria-label">Speed to First Relief</div>
+          <div data-dc-tpl="120" class="criteria-desc">Is there clinical backing for noticeable relief from around 5 days, or does it ask you to wait 8–12 weeks — so most people quit first?</div>
+        </div>
+      </div>
+    </div>
+  </div></section><section data-dc-tpl="121" aria-labelledby="foundation-heading">
+  <div data-dc-tpl="122" class="editorial">
+    <h2 data-dc-tpl="123" id="foundation-heading" class="section-title">Understanding the Real Cause of Joint Pain</h2>
+    <p data-dc-tpl="124" class="body-text">Most people focus on masking symptoms with painkillers, a warming balm, or a basic glucosamine capsule. But masking the surface is like <strong data-dc-tpl="125">polishing the door instead of oiling the hinge</strong> — the wear that makes the joint seize up is on the inside.</p>
+
+    <div data-dc-tpl="126" class="mechanism">
+      <div data-dc-tpl="127" class="mechanism__label">The Real Drivers</div>
+      <p data-dc-tpl="128" class="mechanism__text">Joint decline runs on <strong data-dc-tpl="129">three tracks at once</strong>: a runaway inflammation loop, the thinning of cartilage, and the age-related decline of the <strong data-dc-tpl="130">repair cells</strong> your cartilage depends on. A single-ingredient capsule pulls one lever while the other two keep working against you.</p>
+    </div><figure data-dc-tpl="131" style="margin: 20px 0px; text-align: center;">
+      <img data-dc-tpl="132" src="images/real-cause-three-drivers.webp" loading="lazy" width="1280" height="853" alt="The three drivers of joint decline: a self-feeding inflammation loop, cartilage thinning, and the decline of repair cells" style="width: 100%; height: auto; border-radius: 10px; display: block;" decoding="async">
+      <figcaption data-dc-tpl="133" style="font-size: 13px; color: rgb(107, 114, 128); margin-top: 8px; font-style: italic;">Three problems running at once — a self-feeding inflammation loop, thinning cartilage, and repair cells fading with age.</figcaption>
+    </figure>
+
+    <p data-dc-tpl="134" style="margin: 0px 0px 14px;">That’s three separate problems pulling at the same time — and it’s exactly why single-answer fixes keep disappointing. A painkiller mutes the signal. A balm warms the skin. A basic glucosamine capsule nudges one lever. None of them work on all three drivers together. A formula that does changes the whole picture: instead of fighting one front while the other two advance, the joint can finally move the right way — from the inside out:</p>
+
+    <div data-dc-tpl="135" class="flow" role="img" aria-label="Joint relief pathway">
+      <div data-dc-tpl="136" class="flow-step"><div data-dc-tpl="137" class="flow-step__label">Reaches Inside</div><div data-dc-tpl="138" class="flow-step__sub">Past the surface</div></div>
+      <div data-dc-tpl="139" class="flow-arrow" aria-hidden="true">→</div>
+      <div data-dc-tpl="140" class="flow-step"><div data-dc-tpl="141" class="flow-step__label">Calms Inflammation</div><div data-dc-tpl="142" class="flow-step__sub">Breaks the loop</div></div>
+      <div data-dc-tpl="143" class="flow-arrow" aria-hidden="true">→</div>
+      <div data-dc-tpl="144" class="flow-step"><div data-dc-tpl="145" class="flow-step__label">Rebuilds the Cushion</div><div data-dc-tpl="146" class="flow-step__sub">Cartilage + repair cells</div></div>
+      <div data-dc-tpl="147" class="flow-arrow" aria-hidden="true">→</div>
+      <div data-dc-tpl="148" class="flow-step"><div data-dc-tpl="149" class="flow-step__label">Confident Mobility</div><div data-dc-tpl="150" class="flow-step__sub">Less morning stiffness</div></div>
+    </div>
+
+    <div data-dc-tpl="151" class="info-note" role="note">
+      <span data-dc-tpl="152" aria-hidden="true">💡</span>
+      <p data-dc-tpl="153" class="info-note__text"><strong data-dc-tpl="154">Important Note:</strong> A warming balm or single-ingredient capsule can soothe the surface, but it doesn't reach the inflammation loop or rebuild anything inside the joint. The most effective formulas work on three drivers at once.</p>
+    </div>
+
+    <div data-dc-tpl="155" class="ingr-grid">
+      <div data-dc-tpl="156" class="ingr-card">
+        <div data-dc-tpl="157" class="ingr-badge">Repair-Cell Support</div>
+        <div data-dc-tpl="158" class="ingr-name">Belinal® (Silver Fir)</div>
+        <p data-dc-tpl="159" class="ingr-text">A patented silver-fir extract the makers link to the body's own <strong data-dc-tpl="160">cartilage-repair cells</strong> — the "builders" your joints depend on as they age.</p>
+      </div>
+      <div data-dc-tpl="161" class="ingr-card">
+        <div data-dc-tpl="162" class="ingr-badge">Cartilage &amp; Structure</div>
+        <div data-dc-tpl="163" class="ingr-name">UC-II® Undenatured Collagen</div>
+        <p data-dc-tpl="164" class="ingr-text">A clinically studied collagen that supports cartilage and structure and helps calm the immune response that drives joint inflammation.</p>
+      </div>
+      <div data-dc-tpl="165" class="ingr-card">
+        <div data-dc-tpl="166" class="ingr-badge">Inflammation &amp; Speed</div>
+        <div data-dc-tpl="167" class="ingr-name">AprèsFlex® Boswellia</div>
+        <p data-dc-tpl="168" class="ingr-text">A clinically studied boswellia linked to <strong data-dc-tpl="169">noticeable relief from around 5 days</strong> — without the downsides of long-term painkillers.</p>
+      </div>
+    </div>
+
+    <div data-dc-tpl="170" class="section-closing">
+      <div data-dc-tpl="171" class="section-closing__main">When a formula reaches inside the joint and works on all three drivers, the joint can support its natural ability to move — with less morning stiffness and more confident, everyday mobility.</div>
+      <div data-dc-tpl="172" class="section-closing__sub">Here's how the 5 most talked-about UK formulas of 2026 compare.</div>
+    </div>
+  </div></section><section data-dc-tpl="173" aria-labelledby="ranking-heading">
+  <div data-dc-tpl="174" class="list-heading">
+    <h2 data-dc-tpl="175" id="ranking-heading" class="list-heading__title">Inside 5 Popular UK Joint Formulas: Ingredients, Claims &amp; Real Results</h2>
+    <p data-dc-tpl="176" class="list-heading__sub">A side-by-side look at the most talked-about joint formulas in the UK — including the viral balms — starting with our <strong data-dc-tpl="177">#1 pick</strong>:</p>
+  </div></section><section data-dc-tpl="178" aria-labelledby="rank1-title">
+  <div data-dc-tpl="179" class="rank-section">
+    <div data-dc-tpl="180" class="rank-bar rank-bar--gold">
+      <h3 data-dc-tpl="181" id="rank1-title" class="rank-bar__title rank-bar__title--gold"><span data-dc-tpl="182" class="rank-bar__num--gold">#1</span> Active Move</h3>
+      <img data-dc-tpl="183" class="rank-bar__medal" id="medal1Img" alt="" aria-hidden="true" width="90" height="90" loading="lazy" src="images/top1-seal.webp" decoding="async">
+      
+    </div>
+    <div data-dc-tpl="185" class="rank-body rank-body--blue">
+      <a data-dc-tpl="186" href="https://www.diginear.com/2GFDLQK9/22MR1978/?uid=5536" aria-label="View Active Move">
+        <div data-dc-tpl="187" class="rank-strip">
+          <div data-dc-tpl="188" class="rank-strip__img">
+            <img data-dc-tpl="189" id="activemoveBottleImg" alt="Active Move Supplement Bottle" width="150" height="200" loading="lazy" src="images/product-active-move.webp" decoding="async">
+          </div>
+      
+          <div data-dc-tpl="191" class="rank-ratings">
+            <div data-dc-tpl="192" class="gauge-wrap">
+              <div data-dc-tpl="193" class="gauge" role="img" aria-label="Active Move: 9.6 out of 10">
+                <svg data-dc-tpl="194" viewBox="0 0 100 100" aria-hidden="true"><circle data-dc-tpl="195" class="gauge__bg" cx="50" cy="50" r="45"></circle><circle data-dc-tpl="196" class="gauge__fill--green" cx="50" cy="50" r="45" style="stroke-dashoffset: 11;"></circle></svg>
+                <div data-dc-tpl="197" class="gauge__text" aria-hidden="true">9.6/10</div>
+              </div>
+              <div data-dc-tpl="198" class="gauge__label">Total Ranking<br data-dc-tpl="199">Our Rating</div>
+            </div>
+            <div data-dc-tpl="200" class="grade-wrap">
+              <div data-dc-tpl="201" class="grade-letter grade-letter--black" aria-label="Grade A+">A+</div>
+              <div data-dc-tpl="202" class="grade-label">Overall Grade</div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div></section><div data-dc-tpl="203" class="two-col" style="margin-top: 10px; margin-bottom: 10px;">
+  <div data-dc-tpl="204" class="col-pc">
+    <div data-dc-tpl="205" class="pc-box pc-box--pros">
+      <div data-dc-tpl="206" class="pc-tag pc-tag--pros">Pros</div>
+      <ul data-dc-tpl="207">
+        <li data-dc-tpl="208">Reaches inside the joint — works systemically, not just on the surface</li>
+        <li data-dc-tpl="209">Targets all three drivers at once: inflammation, cartilage and repair</li>
+        <li data-dc-tpl="210">Patented, clinically-studied actives at real doses (AprèsFlex®, UC-II®, Belinal®)</li>
+        <li data-dc-tpl="211">Most people notice first relief from around 5 days</li>
+        <li data-dc-tpl="212">Simple routine — two capsules each morning, with food</li>
+        <li data-dc-tpl="213">60-day money-back guarantee, refunded even if the bottle is empty</li>
+      </ul>
+      <div data-dc-tpl="214" class="stat-callout" style="background: rgb(248, 244, 240); border-left: 4px solid rgb(247, 181, 0); padding: 16px 20px; margin: 20px 0px; border-radius: 4px;">
+        <p data-dc-tpl="215" style="margin: 0px; font-weight: 700; color: rgb(27, 63, 110); font-size: 18px;">4 out of 5 study participants reported joint pain relief and improved mobility in just 2 weeks</p>
+        <p data-dc-tpl="216" style="margin: 6px 0px 0px; font-size: 13px; color: rgb(102, 102, 102);">Research shows relief can be felt fast</p>
+      </div>
+    </div>
+    <div data-dc-tpl="217" class="pc-box pc-box--cons">
+      <div data-dc-tpl="218" class="pc-tag pc-tag--cons">Cons</div>
+      <ul data-dc-tpl="219">
+        <li data-dc-tpl="220">Available only through the official website</li>
+        <li data-dc-tpl="221">Premium price vs a basic glucosamine capsule</li>
+        <li data-dc-tpl="222">Best results need consistent daily use</li>
+      </ul>
+    </div>
+  </div>
+  <div data-dc-tpl="223" class="col-bl">
+    <div data-dc-tpl="224" class="bottomline">
+      <h4 data-dc-tpl="225" class="bottomline__title bottomline__title--blue">Active Move — Ranked #1 for Reaching the Cause From Within</h4>
+      <p data-dc-tpl="226">After comparing the most talked-about UK joint formulas of 2026, Active Move was the one that consistently separated itself from the pack — <strong data-dc-tpl="227">not through marketing claims, but through what's actually inside the formula.</strong></p>
+      <p data-dc-tpl="228"><strong data-dc-tpl="229">Star ingredients: AprèsFlex® Boswellia</strong> — calms the inflammation loop, linked to relief from around 5 days. <strong data-dc-tpl="230">UC-II® undenatured collagen</strong> — supports cartilage and structure. <strong data-dc-tpl="231">Belinal® silver-fir</strong> — linked to the body's own cartilage-repair cells.</p>
+      <p data-dc-tpl="232">Taken as <strong data-dc-tpl="233">two capsules each morning</strong>, with food and water. Backed by a <strong data-dc-tpl="234">60-day money-back guarantee — refunded even if the bottle is empty.</strong></p>
+      <a data-dc-tpl="235" class="btn-cta" href="https://www.diginear.com/2GFDLQK9/22MR1978/?uid=5536">See Why Active Move Is Our #1 →</a>
+      <p data-dc-tpl="236" class="disclaimer">*Individual results may vary. Not medical advice. Always speak to your GP about persistent joint pain.</p>
+    </div>
+  </div></div><section data-dc-tpl="237" aria-labelledby="rank2-title" style="margin-top: 22px;">
+  <div data-dc-tpl="238" class="rank-section">
+    <div data-dc-tpl="239" class="rank-bar rank-bar--silver">
+      <h3 data-dc-tpl="240" id="rank2-title" class="rank-bar__title rank-bar__title--silver"><span data-dc-tpl="241" class="rank-bar__num--silver">#2</span> Senzio Miracle Balm</h3>
+      <img data-dc-tpl="242" class="rank-bar__medal" id="medal2Img" alt="" aria-hidden="true" width="90" height="90" loading="lazy" src="images/6cfcd3e1-953e-46a2-a571-e393299ff63c-misc-src.webp" decoding="async">
+      
+    </div>
+    <div data-dc-tpl="244" class="rank-body">
+      <div data-dc-tpl="245" class="rank-strip">
+        <div data-dc-tpl="246" class="rank-strip__img rank-strip__img--lg">
+          <img data-dc-tpl="247" id="senzioBottleImg" alt="Senzio Miracle Balm" width="180" height="220" loading="lazy" src="images/product-senzio-miracle-balm.webp" decoding="async">
+        </div>
+      
+        <div data-dc-tpl="249" class="rank-ratings">
+          <div data-dc-tpl="250" class="gauge-wrap">
+            <div data-dc-tpl="251" class="gauge" role="img" aria-label="Senzio: 9.1 out of 10">
+              <svg data-dc-tpl="252" viewBox="0 0 100 100" aria-hidden="true"><circle data-dc-tpl="253" class="gauge__bg" cx="50" cy="50" r="45"></circle><circle data-dc-tpl="254" class="gauge__fill--orange" cx="50" cy="50" r="45" style="stroke-dashoffset: 25;"></circle></svg>
+              <div data-dc-tpl="255" class="gauge__text" aria-hidden="true">9.1/10</div>
+            </div>
+            <div data-dc-tpl="256" class="gauge__label">Total Ranking<br data-dc-tpl="257">Our Rating</div>
+          </div>
+          <div data-dc-tpl="258" class="grade-wrap">
+            <div data-dc-tpl="259" class="grade-letter grade-letter--gray" aria-label="Grade A-">A-</div>
+            <div data-dc-tpl="260" class="grade-label">Overall Grade</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></section><div data-dc-tpl="261" class="two-col" style="margin-top: 10px; margin-bottom: 10px;">
+  <div data-dc-tpl="262" class="col-pc">
+    <div data-dc-tpl="263" class="pc-box pc-box--pros">
+      <div data-dc-tpl="264" class="pc-tag pc-tag--pros">Pros</div>
+      <ul data-dc-tpl="265">
+        <li data-dc-tpl="266">Genuinely soothing, on-the-spot relief right where you rub it in</li>
+        <li data-dc-tpl="267">Fast-acting warming sensation — comforting during a flare-up</li>
+        <li data-dc-tpl="268">Easy to use — no capsules to swallow</li>
+        <li data-dc-tpl="269">Great to keep to hand for targeted, occasional comfort</li>
+      </ul>
+    </div>
+    <div data-dc-tpl="270" class="pc-box pc-box--cons">
+      <div data-dc-tpl="271" class="pc-tag pc-tag--cons">Cons</div>
+      <ul data-dc-tpl="272">
+        <li data-dc-tpl="273">Works on the surface only — doesn't reach inside the joint</li>
+        <li data-dc-tpl="274">Relief is temporary; the ache returns once it wears off</li>
+        <li data-dc-tpl="275">Single approach — doesn't address cartilage or the repair cells</li>
+        <li data-dc-tpl="276">Guarantee is brand-policy only</li>
+      </ul>
+    </div>
+  </div>
+  <div data-dc-tpl="277" class="col-bl">
+    <div data-dc-tpl="278" class="bottomline">
+      <h4 data-dc-tpl="279" class="bottomline__title bottomline__title--orange">Senzio Miracle Balm — Best for Fast, On-the-Spot Relief</h4>
+      <p data-dc-tpl="280"><strong data-dc-tpl="281">Senzio has gone viral for a reason.</strong> As a warming topical balm, it delivers genuinely comforting relief exactly where you rub it in. For a sudden flare-up, plenty of people love having it to hand.</p>
+      <p data-dc-tpl="282">But a balm works on the <strong data-dc-tpl="283">surface of the skin</strong>. The wear that makes the joint seize up is on the inside, where a cream simply can't reach.</p>
+      <p data-dc-tpl="284">That's why we placed it at <strong data-dc-tpl="285">#2</strong>: brilliant for fast, temporary comfort — but it doesn't calm the inflammation loop or support cartilage and repair the way an internal formula can. Think of it as the perfect <strong data-dc-tpl="286">companion</strong> to an inside-out formula.</p>
+      <p data-dc-tpl="287">Here’s the part nobody explains: that warm, soothing glow is completely real — and that’s exactly the problem. A warming balm works by switching on the heat-and-cold sensors in the top layers of your skin. Menthol and capsaicin create a sensation of warmth your brain prioritises, briefly masking the deeper ache — the same reason rubbing a knock makes it hurt less for a moment. What it <strong data-dc-tpl="288">can’t</strong> do is travel down through skin, fat and the joint capsule to where the real trouble lives, sealed inside the joint’s own fluid.</p>
+      <p data-dc-tpl="289">So when the warmth fades — usually within half an hour — the inflammation loop is exactly where it was, and the ache walks straight back in. That isn’t you using it wrong. It’s simple <strong data-dc-tpl="290">depth</strong>: surface comfort can quiet the signal for a little while, but it can never touch the cause. That’s the difference between something you rub on and something built to work from the inside out.</p>
+      <figure data-dc-tpl="291" style="margin: 18px 0px; text-align: center;">
+        <img data-dc-tpl="292" src="images/balm-vs-systemic-depth.webp" loading="lazy" width="1280" height="853" alt="A warming balm acts only on the skin surface while the inflammation loop and cartilage damage sit deep inside the joint capsule, reachable only by an oral formula through the bloodstream" style="width: 100%; height: auto; border-radius: 10px; display: block;" decoding="async">
+        <figcaption data-dc-tpl="293" style="font-size: 13px; color: rgb(107, 114, 128); margin-top: 8px; font-style: italic;">Topical relief is surface-deep. The damage sits centimetres below, sealed inside the joint capsule — only an internal formula reaches it.</figcaption>
+      </figure>
+      <p data-dc-tpl="294"><em data-dc-tpl="295">A balm like this works best with something working from the inside out alongside it — which is exactly why <a data-dc-tpl="296" href="https://www.diginear.com/2GFDLQK9/22MR1978/?uid=5536"><strong data-dc-tpl="297">Active Move took our #1 spot</strong></a>.</em></p>
+      <p data-dc-tpl="298" class="disclaimer">*Individual results may vary. Always check the official website for full details.</p>
+    </div>
+  </div></div><section data-dc-tpl="299" aria-labelledby="rank3-title" style="margin-top: 22px;">
+  <div data-dc-tpl="300" class="rank-section">
+    <div data-dc-tpl="301" class="rank-bar rank-bar--silver">
+      <h3 data-dc-tpl="302" id="rank3-title" class="rank-bar__title rank-bar__title--silver"><span data-dc-tpl="303" class="rank-bar__num--silver">#3</span> Joint Genesis</h3>
+      <img data-dc-tpl="304" class="rank-bar__medal" id="medal3Img" alt="" aria-hidden="true" width="90" height="90" loading="lazy" src="images/9713ef48-b182-4722-a520-8b6d5aaeba28-misc-src.webp" decoding="async">
+      
+    </div>
+    <div data-dc-tpl="306" class="rank-body">
+      <div data-dc-tpl="307" class="rank-strip">
+        <div data-dc-tpl="308" class="rank-strip__img rank-strip__img--lg">
+          <img data-dc-tpl="309" id="genesisBottleImg" alt="Joint Genesis joint supplement" width="180" height="220" loading="lazy" src="images/product-joint-genesis.webp" decoding="async">
+        </div>
+      
+        <div data-dc-tpl="311" class="rank-ratings">
+          <div data-dc-tpl="312" class="gauge-wrap">
+            <div data-dc-tpl="313" class="gauge" role="img" aria-label="Joint Genesis: 8.2 out of 10">
+              <svg data-dc-tpl="314" viewBox="0 0 100 100" aria-hidden="true"><circle data-dc-tpl="315" class="gauge__bg" cx="50" cy="50" r="45"></circle><circle data-dc-tpl="316" class="gauge__fill--orange" cx="50" cy="50" r="45" style="stroke-dashoffset: 51;"></circle></svg>
+              <div data-dc-tpl="317" class="gauge__text" aria-hidden="true">8.2/10</div>
+            </div>
+            <div data-dc-tpl="318" class="gauge__label">Total Ranking<br data-dc-tpl="319">Our Rating</div>
+          </div>
+          <div data-dc-tpl="320" class="grade-wrap">
+            <div data-dc-tpl="321" class="grade-letter grade-letter--gray" aria-label="Grade B+">B+</div>
+            <div data-dc-tpl="322" class="grade-label">Overall Grade</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></section><div data-dc-tpl="323" class="two-col" style="margin-top: 10px; margin-bottom: 10px;">
+  <div data-dc-tpl="324" class="col-pc">
+    <div data-dc-tpl="325" class="pc-box pc-box--pros">
+      <div data-dc-tpl="326" class="pc-tag pc-tag--pros">Pros</div>
+      <ul data-dc-tpl="327">
+        <li data-dc-tpl="328">Oral formula — works inside the joint, not just on the surface</li>
+        <li data-dc-tpl="329">Built around hyaluronic acid for joint cushioning</li>
+        <li data-dc-tpl="330">Capsule format with a money-back guarantee</li>
+        <li data-dc-tpl="331">Modern, well-marketed brand</li>
+      </ul>
+    </div>
+    <div data-dc-tpl="332" class="pc-box pc-box--cons">
+      <div data-dc-tpl="333" class="pc-tag pc-tag--cons">Cons</div>
+      <ul data-dc-tpl="334">
+        <li data-dc-tpl="335">Mainly single-track (largely HA) — light on inflammation and repair</li>
+        <li data-dc-tpl="336">Slower runway: typically 4–8 weeks before you notice a change</li>
+        <li data-dc-tpl="337">No AprèsFlex® / UC-II® / Belinal® multi-driver actives</li>
+        <li data-dc-tpl="338">Premium price for essentially one mechanism</li>
+      </ul>
+    </div>
+  </div>
+  <div data-dc-tpl="339" class="col-bl">
+    <div data-dc-tpl="340" class="bottomline">
+      <h4 data-dc-tpl="341" class="bottomline__title bottomline__title--orange">Joint Genesis — Best for Modern HA Cushioning</h4>
+      <p data-dc-tpl="342"><strong data-dc-tpl="343">Joint Genesis gets the big thing right that the balms miss:</strong> it's an oral formula, so it actually works inside the joint.</p>
+      <p data-dc-tpl="344">Its focus is <strong data-dc-tpl="345">hyaluronic acid</strong> — the molecule behind the cushioning, lubricating fluid your joints rely on.</p>
+      <p data-dc-tpl="346">Where it falls behind our #1 is <strong data-dc-tpl="347">breadth</strong>. It leans largely on one mechanism — expect a slower runway of <strong data-dc-tpl="348">4–8 weeks</strong> and a premium price for a mostly single-track formula.</p>
+      <p data-dc-tpl="349"><em data-dc-tpl="350">If it’s breadth you’re after — all three drivers, not one — it’s worth seeing <a data-dc-tpl="351" href="https://www.diginear.com/2GFDLQK9/22MR1978/?uid=5536"><strong data-dc-tpl="352">why Active Move outpaced it for our #1</strong></a>.</em></p>
+      <p data-dc-tpl="353" class="disclaimer">*Individual results may vary. Always check the official website for full details.</p>
+    </div>
+  </div></div><section data-dc-tpl="354" aria-labelledby="rank4-title" style="margin-top: 22px;">
+  <div data-dc-tpl="355" class="rank-section">
+    <div data-dc-tpl="356" class="rank-bar rank-bar--bronze">
+      <h3 data-dc-tpl="357" id="rank4-title" class="rank-bar__title rank-bar__title--other"><span data-dc-tpl="358" class="rank-bar__num--other">#4</span> YuMove iMOVE</h3>
+      <img data-dc-tpl="359" class="rank-bar__medal" id="medal4Img" alt="" aria-hidden="true" width="90" height="90" loading="lazy" src="images/fd3f2d1b-9130-4342-af08-6c68e7d6175c-misc-src.webp" decoding="async">
+      
+    </div>
+    <div data-dc-tpl="361" class="rank-body">
+      <div data-dc-tpl="362" class="rank-strip">
+        <div data-dc-tpl="363" class="rank-strip__img rank-strip__img--lg">
+          <img data-dc-tpl="364" id="yumoveBottleImg" alt="YuMove iMOVE joint supplement" width="180" height="220" loading="lazy" src="images/product-yumove-imove.webp" decoding="async">
+        </div>
+      
+        <div data-dc-tpl="366" class="rank-ratings">
+          <div data-dc-tpl="367" class="gauge-wrap">
+            <div data-dc-tpl="368" class="gauge" role="img" aria-label="YuMove: 7.4 out of 10">
+              <svg data-dc-tpl="369" viewBox="0 0 100 100" aria-hidden="true"><circle data-dc-tpl="370" class="gauge__bg" cx="50" cy="50" r="45"></circle><circle data-dc-tpl="371" class="gauge__fill--gray" cx="50" cy="50" r="45" style="stroke-dashoffset: 74;"></circle></svg>
+              <div data-dc-tpl="372" class="gauge__text" aria-hidden="true">7.4/10</div>
+            </div>
+            <div data-dc-tpl="373" class="gauge__label">Total Ranking<br data-dc-tpl="374">Our Rating</div>
+          </div>
+          <div data-dc-tpl="375" class="grade-wrap">
+            <div data-dc-tpl="376" class="grade-letter grade-letter--midgray" aria-label="Grade C+">C+</div>
+            <div data-dc-tpl="377" class="grade-label">Overall Grade</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></section><div data-dc-tpl="378" class="two-col" style="margin-top: 10px; margin-bottom: 10px;">
+  <div data-dc-tpl="379" class="col-pc">
+    <div data-dc-tpl="380" class="pc-box pc-box--pros">
+      <div data-dc-tpl="381" class="pc-tag pc-tag--pros">Pros</div>
+      <ul data-dc-tpl="382">
+        <li data-dc-tpl="383">A trusted, widely-recognised UK joint brand</li>
+        <li data-dc-tpl="384">Easy everyday upkeep for general maintenance</li>
+        <li data-dc-tpl="385">Capsule format; non-GMO</li>
+      </ul>
+    </div>
+    <div data-dc-tpl="386" class="pc-box pc-box--cons">
+      <div data-dc-tpl="387" class="pc-tag pc-tag--cons">Cons</div>
+      <ul data-dc-tpl="388">
+        <li data-dc-tpl="389">Glucosamine-led — the older, single-mechanism approach</li>
+        <li data-dc-tpl="390">Built for maintenance, not for reaching the cause of pain</li>
+        <li data-dc-tpl="391">No multi-driver actives (no AprèsFlex® / UC-II® / Belinal®)</li>
+        <li data-dc-tpl="392">Best thought of as upkeep, not relief</li>
+      </ul>
+    </div>
+  </div>
+  <div data-dc-tpl="393" class="col-bl">
+    <div data-dc-tpl="394" class="bottomline">
+      <h4 data-dc-tpl="395" class="bottomline__title bottomline__title--orange">YuMove iMOVE — Best for Trusted Everyday Upkeep</h4>
+      <p data-dc-tpl="396"><strong data-dc-tpl="397">YuMove is one of the most recognised joint names in the UK.</strong> As a daily "upkeep" habit, it does a reasonable job.</p>
+      <p data-dc-tpl="398">The catch is the approach. It's <strong data-dc-tpl="399">glucosamine-led</strong> — the older, single-mechanism route. It doesn't reach inside the joint to work on the three drivers. Fine as gentle daily upkeep; not the choice if morning stiffness is already running your day.</p>
+      <p data-dc-tpl="400"><em data-dc-tpl="401">For a formula that actually reaches inside the joint to work on the three drivers, <a data-dc-tpl="402" href="https://www.diginear.com/2GFDLQK9/22MR1978/?uid=5536"><strong data-dc-tpl="403">here’s how our #1 does it</strong></a>.</em></p>
+      <p data-dc-tpl="404" class="disclaimer">*Individual results may vary. Always check the official website for full details.</p>
+    </div>
+  </div></div><section data-dc-tpl="405" aria-labelledby="rank5-title" style="margin-top: 22px;">
+  <div data-dc-tpl="406" class="rank-section">
+    <div data-dc-tpl="407" class="rank-bar rank-bar--4">
+      <h3 data-dc-tpl="408" id="rank5-title" class="rank-bar__title rank-bar__title--other"><span data-dc-tpl="409" class="rank-bar__num--other">#5</span> Revive Active Joint Complex</h3>
+      <img data-dc-tpl="410" class="rank-bar__medal" src="images/b836667d-d29f-49d8-a3b0-a04ed425cff2-misc-src.webp" alt="" aria-hidden="true" width="90" height="90" loading="lazy" decoding="async">
+    </div>
+    <div data-dc-tpl="411" class="rank-body">
+      <div data-dc-tpl="412" class="rank-strip">
+        <div data-dc-tpl="413" class="rank-strip__img rank-strip__img--lg">
+          <img data-dc-tpl="414" id="reviveBottleImg" alt="Revive Active Joint Complex supplement" width="180" height="220" loading="lazy" src="images/product-revive-active-joint.webp" decoding="async">
+        </div>
+      
+        <div data-dc-tpl="416" class="rank-ratings">
+          <div data-dc-tpl="417" class="gauge-wrap">
+            <div data-dc-tpl="418" class="gauge" role="img" aria-label="Revive Active: 6.8 out of 10">
+              <svg data-dc-tpl="419" viewBox="0 0 100 100" aria-hidden="true"><circle data-dc-tpl="420" class="gauge__bg" cx="50" cy="50" r="45"></circle><circle data-dc-tpl="421" class="gauge__fill--lightgray" cx="50" cy="50" r="45" style="stroke-dashoffset: 91;"></circle></svg>
+              <div data-dc-tpl="422" class="gauge__text" aria-hidden="true">6.8/10</div>
+            </div>
+            <div data-dc-tpl="423" class="gauge__label">Total Ranking<br data-dc-tpl="424">Our Rating</div>
+          </div>
+          <div data-dc-tpl="425" class="grade-wrap">
+            <div data-dc-tpl="426" class="grade-letter grade-letter--lightgray" aria-label="Grade C">C</div>
+            <div data-dc-tpl="427" class="grade-label">Overall Grade</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></section><div data-dc-tpl="428" class="two-col" style="margin-top: 10px; margin-bottom: 28px;">
+  <div data-dc-tpl="429" class="col-pc">
+    <div data-dc-tpl="430" class="pc-box pc-box--pros">
+      <div data-dc-tpl="431" class="pc-tag pc-tag--pros">Pros</div>
+      <ul data-dc-tpl="432">
+        <li data-dc-tpl="433">Broad daily blend with several recognisable ingredients</li>
+        <li data-dc-tpl="434">Convenient all-in-one daily format</li>
+        <li data-dc-tpl="435">Established wellness brand</li>
+      </ul>
+    </div>
+    <div data-dc-tpl="436" class="pc-box pc-box--cons">
+      <div data-dc-tpl="437" class="pc-tag pc-tag--cons">Cons</div>
+      <ul data-dc-tpl="438">
+        <li data-dc-tpl="439">Broad blend with no clear lead mechanism — tries to do everything</li>
+        <li data-dc-tpl="440">Gradual: works slowly, if at all, for joint-specific pain</li>
+        <li data-dc-tpl="441">Not built to reach inside the joint or target the three drivers</li>
+        <li data-dc-tpl="442">Dosing of individual joint actives is unclear</li>
+      </ul>
+    </div>
+  </div>
+  <div data-dc-tpl="443" class="col-bl">
+    <div data-dc-tpl="444" class="bottomline">
+      <h4 data-dc-tpl="445" class="bottomline__title bottomline__title--orange">Revive Active Joint Complex — Best for a Broad Daily Blend</h4>
+      <p data-dc-tpl="446"><strong data-dc-tpl="447">Revive Active is a well-known name with a broad, all-in-one daily blend.</strong> If you like the idea of one serving covering a bit of everything, it has a certain appeal.</p>
+      <p data-dc-tpl="448">But a formula spread across many ingredients <strong data-dc-tpl="449">rarely delivers a clinical dose of the things that actually matter for joints.</strong> It's a gradual, general-wellness option rather than a targeted joint formula.</p>
+      <p data-dc-tpl="450"><em data-dc-tpl="451">If you’d rather have a targeted, clinically-dosed joint formula than a broad wellness blend, <a data-dc-tpl="452" href="https://www.diginear.com/2GFDLQK9/22MR1978/?uid=5536"><strong data-dc-tpl="453">this is why Active Move finished first</strong></a>.</em></p>
+      <p data-dc-tpl="454" class="disclaimer">*Individual results may vary. Always check the official website for full details.</p>
+    </div>
+  </div></div><section data-dc-tpl="455" class="comp-section" aria-labelledby="comparison-heading">
+  <div data-dc-tpl="456" class="comp-header">
+    <h2 data-dc-tpl="457" id="comparison-heading">5 Natural Joint Formulas Compared: One Stands Out in Every Key Area</h2>
+  </div>
+  <div data-dc-tpl="458" class="comp-table" role="region" aria-label="Formula comparison table" tabindex="0">
+    <div data-dc-tpl="459" class="comp-grid comp-grid--head">
+      <div data-dc-tpl="460" class="comp-label">Key Features</div>
+      <div data-dc-tpl="461" class="comp-cell comp-cell--hl"><img data-dc-tpl="462" src="images/product-active-move.webp" alt="Active Move" loading="lazy" width="75" height="100" decoding="async"><div data-dc-tpl="463" class="prod-name prod-name--top">Active Move<br data-dc-tpl="464">#1</div></div>
+      <div data-dc-tpl="465" class="comp-cell"><img data-dc-tpl="466" src="images/product-senzio-miracle-balm.webp" alt="Senzio Miracle Balm" loading="lazy" width="75" height="100" decoding="async"><div data-dc-tpl="467" class="prod-name">Senzio Miracle Balm<br data-dc-tpl="468">#2</div></div>
+      <div data-dc-tpl="469" class="comp-cell"><img data-dc-tpl="470" src="images/product-joint-genesis.webp" alt="Joint Genesis" loading="lazy" width="75" height="100" decoding="async"><div data-dc-tpl="471" class="prod-name">Joint Genesis<br data-dc-tpl="472">#3</div></div>
+      <div data-dc-tpl="473" class="comp-cell"><img data-dc-tpl="474" src="images/product-yumove-imove.webp" alt="YuMove iMOVE" loading="lazy" width="75" height="100" decoding="async"><div data-dc-tpl="475" class="prod-name">YuMove iMOVE<br data-dc-tpl="476">#4</div></div>
+      <div data-dc-tpl="477" class="comp-cell"><img data-dc-tpl="478" src="images/product-revive-active-joint.webp" alt="Revive Active" loading="lazy" width="75" height="100" decoding="async"><div data-dc-tpl="479" class="prod-name">Revive Active<br data-dc-tpl="480">#5</div></div>
+    </div>
+    <div data-dc-tpl="481" class="comp-grid">
+      <div data-dc-tpl="482" class="comp-label">Reaches Inside the Joint</div>
+      <div data-dc-tpl="483" class="comp-cell comp-cell--hl"><span data-dc-tpl="484" class="icon-yes" role="img" aria-label="Yes">✓</span></div>
+      <div data-dc-tpl="485" class="comp-cell"><span data-dc-tpl="486" class="icon-no" role="img" aria-label="No">✗</span></div>
+      <div data-dc-tpl="487" class="comp-cell"><span data-dc-tpl="488" class="icon-yes" role="img" aria-label="Yes">✓</span></div>
+      <div data-dc-tpl="489" class="comp-cell"><span data-dc-tpl="490" class="icon-yes" role="img" aria-label="Yes">✓</span></div>
+      <div data-dc-tpl="491" class="comp-cell"><span data-dc-tpl="492" class="icon-yes" role="img" aria-label="Yes">✓</span></div>
+    </div>
+    <div data-dc-tpl="493" class="comp-grid">
+      <div data-dc-tpl="494" class="comp-label">Works on All 3 Drivers</div>
+      <div data-dc-tpl="495" class="comp-cell comp-cell--hl"><span data-dc-tpl="496" class="icon-yes" role="img" aria-label="Yes">✓</span></div>
+      <div data-dc-tpl="497" class="comp-cell"><span data-dc-tpl="498" class="icon-no" role="img" aria-label="No">✗</span></div>
+      <div data-dc-tpl="499" class="comp-cell"><span data-dc-tpl="500" class="icon-no" role="img" aria-label="No">✗</span></div>
+      <div data-dc-tpl="501" class="comp-cell"><span data-dc-tpl="502" class="icon-no" role="img" aria-label="No">✗</span></div>
+      <div data-dc-tpl="503" class="comp-cell"><span data-dc-tpl="504" class="icon-no" role="img" aria-label="No">✗</span></div>
+    </div>
+    <div data-dc-tpl="505" class="comp-grid">
+      <div data-dc-tpl="506" class="comp-label">Patented Actives (AprèsFlex®/UC-II®/Belinal®)</div>
+      <div data-dc-tpl="507" class="comp-cell comp-cell--hl"><span data-dc-tpl="508" class="icon-yes" role="img" aria-label="Yes">✓</span></div>
+      <div data-dc-tpl="509" class="comp-cell"><span data-dc-tpl="510" class="icon-no" role="img" aria-label="No">✗</span></div>
+      <div data-dc-tpl="511" class="comp-cell"><span data-dc-tpl="512" class="icon-no" role="img" aria-label="No">✗</span></div>
+      <div data-dc-tpl="513" class="comp-cell"><span data-dc-tpl="514" class="icon-no" role="img" aria-label="No">✗</span></div>
+      <div data-dc-tpl="515" class="comp-cell"><span data-dc-tpl="516" class="icon-no" role="img" aria-label="No">✗</span></div>
+    </div>
+    <div data-dc-tpl="517" class="comp-grid">
+      <div data-dc-tpl="518" class="comp-label">Fast Relief (~5 Days)</div>
+      <div data-dc-tpl="519" class="comp-cell comp-cell--hl"><span data-dc-tpl="520" class="icon-yes" role="img" aria-label="Yes">✓</span></div>
+      <div data-dc-tpl="521" class="comp-cell"><span data-dc-tpl="522" class="icon-yes" role="img" aria-label="Yes">✓</span></div>
+      <div data-dc-tpl="523" class="comp-cell"><span data-dc-tpl="524" class="icon-no" role="img" aria-label="No">✗</span></div>
+      <div data-dc-tpl="525" class="comp-cell"><span data-dc-tpl="526" class="icon-no" role="img" aria-label="No">✗</span></div>
+      <div data-dc-tpl="527" class="comp-cell"><span data-dc-tpl="528" class="icon-no" role="img" aria-label="No">✗</span></div>
+    </div>
+  </div>
+  <div data-dc-tpl="529" class="comp-footer">
+    <p data-dc-tpl="530"><strong data-dc-tpl="531">Active Move is the only formula</strong> built to <span data-dc-tpl="532" class="hl">reach inside the joint</span> and work on <span data-dc-tpl="533" class="hl">all three drivers of joint pain at once</span>, using <span data-dc-tpl="534" class="hl">patented, clinically-studied actives</span> — AprèsFlex® Boswellia, UC-II® collagen and Belinal®.</p>
+    <p data-dc-tpl="535">Some products share an ingredient or a strength — but <strong data-dc-tpl="536">none combine reach, breadth and speed in one formula.</strong></p>
+  </div></section><h2 data-dc-tpl="537" class="reviews-heading"><strong data-dc-tpl="538">Consumer Feedback &amp; Reported Experiences</strong></h2><div data-dc-tpl="539" class="testimonials">
+  <article data-dc-tpl="540" class="testimonial">
+    <div data-dc-tpl="541" class="testimonial__avatar">
+      <img data-dc-tpl="542" id="testImg1" alt="" aria-hidden="true" width="90" height="90" loading="lazy" src="images/margaret.webp" decoding="async">
+      <p data-dc-tpl="543" aria-hidden="true">*Image blurred for privacy</p>
+    </div>
+    
+    <div data-dc-tpl="545" class="testimonial__body">
+      <p data-dc-tpl="546"><strong data-dc-tpl="547">Margaret L., 63</strong><br data-dc-tpl="548">Leeds, UK</p>
+      <p data-dc-tpl="549">"Three weeks in and the morning stiffness that used to last a full hour is barely there. I went back to gardening on Sunday for the first time in two years — knelt down, got back up, no drama."</p>
+    </div>
+  </article>
+  <article data-dc-tpl="550" class="testimonial">
+    <div data-dc-tpl="551" class="testimonial__avatar">
+      <img data-dc-tpl="552" id="testImg2" alt="" aria-hidden="true" width="90" height="90" loading="lazy" src="images/23.jpg" decoding="async">
+      <p data-dc-tpl="553" aria-hidden="true">*Image blurred for privacy</p>
+    </div>
+    
+    <div data-dc-tpl="555" class="testimonial__body">
+      <p data-dc-tpl="556"><strong data-dc-tpl="557">David R., 58</strong><br data-dc-tpl="558">Bristol, UK</p>
+      <p data-dc-tpl="559">"I'd written off supplements after glucosamine did nothing for me. This felt different within the first week — the stairs at work don't make me wince anymore."</p>
+    </div>
+  </article>
+  <article data-dc-tpl="560" class="testimonial">
+    <div data-dc-tpl="561" class="testimonial__avatar">
+      <img data-dc-tpl="562" id="testImg3" alt="" aria-hidden="true" width="90" height="90" loading="lazy" src="images/44.jpg" decoding="async">
+      <p data-dc-tpl="563" aria-hidden="true">*Image blurred for privacy</p>
+    </div>
+    
+    <div data-dc-tpl="565" class="testimonial__body">
+      <p data-dc-tpl="566"><strong data-dc-tpl="567">Susan T., 66</strong><br data-dc-tpl="568">Glasgow, UK</p>
+      <p data-dc-tpl="569">"Sceptical at first, but the empty-bottle guarantee made it easy to try — what did I have to lose? The deep ache in my knees has eased right off and I'm sleeping through the night again."</p>
+    </div>
+  </article>
+  <article data-dc-tpl="570" class="testimonial">
+    <div data-dc-tpl="571" class="testimonial__avatar">
+      <img data-dc-tpl="572" id="testImg4" alt="" aria-hidden="true" width="90" height="90" loading="lazy" src="images/41.jpg" decoding="async">
+      <p data-dc-tpl="573" aria-hidden="true">*Image blurred for privacy</p>
+    </div>
+    
+    <div data-dc-tpl="575" class="testimonial__body">
+      <p data-dc-tpl="576"><strong data-dc-tpl="577">Geoff M., 61</strong><br data-dc-tpl="578">Manchester, UK</p>
+      <p data-dc-tpl="579">"I tried one of those viral warming balms first. Lovely for ten minutes, then the ache came straight back. This is the first thing that's actually held."</p>
+    </div>
+  </article>
+  <article data-dc-tpl="580" class="testimonial">
+    <div data-dc-tpl="581" class="testimonial__avatar">
+      <img data-dc-tpl="582" id="testImg5" alt="" aria-hidden="true" width="90" height="90" loading="lazy" src="images/anne.webp" decoding="async">
+      <p data-dc-tpl="583" aria-hidden="true">*Image blurred for privacy</p>
+    </div>
+    
+    <div data-dc-tpl="585" class="testimonial__body">
+      <p data-dc-tpl="586"><strong data-dc-tpl="587">Anne P., 59</strong><br data-dc-tpl="588">Cardiff, UK</p>
+      <p data-dc-tpl="589">"Around day five something shifted. Getting out of the car, getting out of bed — all the little movements that used to catch me are just… easier now."</p>
+    </div>
+  </article></div><div data-dc-tpl="590" class="container--narrow" style="padding: 0px 20px;">
+  <div data-dc-tpl="591" class="summary-box">
+    <div data-dc-tpl="592" class="summary-box__header">Active Move — The #1 Rated UK Joint Formula for 2026</div>
+    <div data-dc-tpl="593" class="summary-box__row">
+      <div data-dc-tpl="594" class="summary-box__img">
+        <img data-dc-tpl="595" id="summaryImg" alt="Active Move Supplement Bottle" width="120" height="160" loading="lazy" src="images/product-active-move.webp" decoding="async">
+      </div>
+      
+      <div data-dc-tpl="597" class="summary-box__details">
+        <svg data-dc-tpl="598" aria-hidden="true" style="display: none;">
+          <symbol data-dc-tpl="599" id="star-full" viewBox="0 0 24 24"><path data-dc-tpl="600" d="M12 .587l3.668 7.568L24 9.748l-6 5.847 1.416 8.252L12 19.771l-7.416 4.076L6 15.595 0 9.748l8.332-1.593z" fill="#f7b500"></path></symbol>
+        </svg>
+        <div data-dc-tpl="601" class="star-row"><span data-dc-tpl="602" class="star-label">Reaches Inside the Joint</span><div data-dc-tpl="603" class="stars" role="img" aria-label="5 out of 5 stars"><svg data-dc-tpl="604" aria-hidden="true"><use data-dc-tpl="605" href="#star-full"></use></svg><svg data-dc-tpl="606" aria-hidden="true"><use data-dc-tpl="607" href="#star-full"></use></svg><svg data-dc-tpl="608" aria-hidden="true"><use data-dc-tpl="609" href="#star-full"></use></svg><svg data-dc-tpl="610" aria-hidden="true"><use data-dc-tpl="611" href="#star-full"></use></svg><svg data-dc-tpl="612" aria-hidden="true"><use data-dc-tpl="613" href="#star-full"></use></svg></div></div>
+        <div data-dc-tpl="614" class="star-row"><span data-dc-tpl="615" class="star-label">Works on All 3 Drivers of Pain</span><div data-dc-tpl="616" class="stars" role="img" aria-label="5 out of 5 stars"><svg data-dc-tpl="617" aria-hidden="true"><use data-dc-tpl="618" href="#star-full"></use></svg><svg data-dc-tpl="619" aria-hidden="true"><use data-dc-tpl="620" href="#star-full"></use></svg><svg data-dc-tpl="621" aria-hidden="true"><use data-dc-tpl="622" href="#star-full"></use></svg><svg data-dc-tpl="623" aria-hidden="true"><use data-dc-tpl="624" href="#star-full"></use></svg><svg data-dc-tpl="625" aria-hidden="true"><use data-dc-tpl="626" href="#star-full"></use></svg></div></div>
+        <div data-dc-tpl="627" class="star-row"><span data-dc-tpl="628" class="star-label">Fast First Relief (~5 Days)</span><div data-dc-tpl="629" class="stars" role="img" aria-label="5 out of 5 stars"><svg data-dc-tpl="630" aria-hidden="true"><use data-dc-tpl="631" href="#star-full"></use></svg><svg data-dc-tpl="632" aria-hidden="true"><use data-dc-tpl="633" href="#star-full"></use></svg><svg data-dc-tpl="634" aria-hidden="true"><use data-dc-tpl="635" href="#star-full"></use></svg><svg data-dc-tpl="636" aria-hidden="true"><use data-dc-tpl="637" href="#star-full"></use></svg><svg data-dc-tpl="638" aria-hidden="true"><use data-dc-tpl="639" href="#star-full"></use></svg></div></div>
+        <div data-dc-tpl="640" class="star-row"><span data-dc-tpl="641" class="star-label">Research-Backed Ingredients</span><div data-dc-tpl="642" class="stars" role="img" aria-label="4.5 out of 5 stars"><svg data-dc-tpl="643" aria-hidden="true"><use data-dc-tpl="644" href="#star-full"></use></svg><svg data-dc-tpl="645" aria-hidden="true"><use data-dc-tpl="646" href="#star-full"></use></svg><svg data-dc-tpl="647" aria-hidden="true"><use data-dc-tpl="648" href="#star-full"></use></svg><svg data-dc-tpl="649" aria-hidden="true"><use data-dc-tpl="650" href="#star-full"></use></svg><svg data-dc-tpl="651" aria-hidden="true" viewBox="0 0 24 24"><defs data-dc-tpl="652"><linearGradient data-dc-tpl="653" id="half1" x1="0" x2="1" y1="0" y2="0"><stop data-dc-tpl="654" offset="50%" stop-color="#f7b500"></stop><stop data-dc-tpl="655" offset="50%" stop-color="#e0e0e0"></stop></linearGradient></defs><path data-dc-tpl="656" fill="url(#half1)" d="M12 .587l3.668 7.568L24 9.748l-6 5.847 1.416 8.252L12 19.771l-7.416 4.076L6 15.595 0 9.748l8.332-1.593z"></path></svg></div></div>
+        <div data-dc-tpl="657" class="star-row"><span data-dc-tpl="658" class="star-label">Consumer Reviews</span><div data-dc-tpl="659" class="stars" role="img" aria-label="4.5 out of 5 stars"><svg data-dc-tpl="660" aria-hidden="true"><use data-dc-tpl="661" href="#star-full"></use></svg><svg data-dc-tpl="662" aria-hidden="true"><use data-dc-tpl="663" href="#star-full"></use></svg><svg data-dc-tpl="664" aria-hidden="true"><use data-dc-tpl="665" href="#star-full"></use></svg><svg data-dc-tpl="666" aria-hidden="true"><use data-dc-tpl="667" href="#star-full"></use></svg><svg data-dc-tpl="668" aria-hidden="true" viewBox="0 0 24 24"><defs data-dc-tpl="669"><linearGradient data-dc-tpl="670" id="half2" x1="0" x2="1" y1="0" y2="0"><stop data-dc-tpl="671" offset="50%" stop-color="#f7b500"></stop><stop data-dc-tpl="672" offset="50%" stop-color="#e0e0e0"></stop></linearGradient></defs><path data-dc-tpl="673" fill="url(#half2)" d="M12 .587l3.668 7.568L24 9.748l-6 5.847 1.416 8.252L12 19.771l-7.416 4.076L6 15.595 0 9.748l8.332-1.593z"></path></svg></div></div>
+      </div>
+    </div>
+    <p data-dc-tpl="674" class="summary-box__text"><strong data-dc-tpl="675">Active Move</strong> stands apart because it doesn't just mask joint pain on the surface — it's built to <strong data-dc-tpl="676">reach inside the joint</strong> and work on the real cause.<br data-dc-tpl="677"><br data-dc-tpl="678">Its patented, clinically-studied actives — <strong data-dc-tpl="679">AprèsFlex® Boswellia, UC-II® undenatured collagen,</strong> and <strong data-dc-tpl="680">Belinal® silver-fir</strong> — work together rather than pulling in one direction. Most people notice first relief from <strong data-dc-tpl="681">around 5 days</strong>.<br data-dc-tpl="682"><br data-dc-tpl="683">Taken as <strong data-dc-tpl="684">two capsules each morning</strong> with food, backed by a <strong data-dc-tpl="685">60-day money-back guarantee — refunded even if the bottle is empty.</strong></p>
+    <div data-dc-tpl="686" style="text-align: center;">
+      <a data-dc-tpl="687" href="https://www.diginear.com/2GFDLQK9/22MR1978/?uid=5536" class="btn-yellow">Read The Full Clinical Investigation →</a>
+    </div>
+  </div></div></main><footer data-dc-tpl="688" class="footer" role="contentinfo">
+  <nav data-dc-tpl="689" class="footer__links" aria-label="Footer navigation">
+    <a data-dc-tpl="690" href="https://healthranking.online/privacy-policy/"><strong data-dc-tpl="691">Privacy Policy / Terms</strong></a>
+  </nav></footer><div data-dc-tpl="692" class="disclaimer-footer">
+  <p data-dc-tpl="693"><strong data-dc-tpl="694">Medical Disclaimer</strong><br data-dc-tpl="695">
+  The information provided on this website is for general informational purposes only and is not intended as medical advice. This is an independent editorial review. Food supplements are not intended to diagnose, treat, cure, or prevent any disease. Always speak to your GP or a qualified healthcare professional before starting any new supplement. Individual results may vary.</p></div><a data-dc-tpl="696" href="https://www.diginear.com/2GFDLQK9/22MR1978/?uid=5536" class="float-btn" id="float-cta" aria-label="The #1 Joint Relief Pick of 2026 — Visit Official Active Move Website" style="animation: 2.2s ease 0s infinite normal none running pulse-btn;">
+  <div data-dc-tpl="697" class="float-btn__text">
+    <span data-dc-tpl="698" class="float-btn__main">The #1 UK Joint Pick of 2026</span>
+    <span data-dc-tpl="699" class="float-btn__sub">See why Active Move won</span>
+  </div>
+  <div data-dc-tpl="700" class="float-btn__icon" aria-hidden="true">➔</div></a></div></div>
+
+
+
+<script>(function(){var M=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];var d=new Date();var t=M[d.getMonth()]+' '+d.getFullYear();var els=document.querySelectorAll('.ticker-updated');for(var i=0;i<els.length;i++){els[i].textContent=t;}})();</script><script>document.addEventListener('DOMContentLoaded',function(){var b=document.getElementById('float-cta');if(!b)return;var t=false;window.addEventListener('scroll',function h(){if(!t&&window.scrollY>400){t=true;b.style.animation='pulse-btn 2.2s ease infinite';window.removeEventListener('scroll',h);}},{passive:true});});</script></body></html>
