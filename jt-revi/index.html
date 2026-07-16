@@ -1512,6 +1512,20 @@ ul{list-style:none;padding:0;margin:0}
 	<!-- Place at the end of the head and before the </head> tag -->
 	<script async data-render-head="true" src="https://static.filtripixel.io/filtripixel.minify.js?pixelId=6c7b477e-91f6-492f-b5db-5a740d5e9a79"></script>
 	<!-- End Filtripixel tracking (filtripixel.minify.js) -->
+	<!-- Google Ads conversion tracking (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17205951180"></script>
+<script>
+  window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  gtag('config','AW-17205951180',{'transport_type':'beacon'});
+  document.addEventListener('click',function(e){
+    var n=e.target;
+    while(n&&n!==document.body&&n.nodeName!=='A'){n=n.parentNode;}
+    if(n&&n.nodeName==='A'&&n.href&&n.href.indexOf('diginear.com')>-1){
+      gtag('event','conversion',{'send_to':'AW-17191196032/-cXlCM-0v9EcEICrs4VA','transport_type':'beacon'});
+    }
+  },true);
+</script>
 </head>
 <body>
 <div id="dc-root"><div class="sc-host" data-sc-name="index"><header data-dc-tpl="12" class="ticker" aria-label="Site banner">
