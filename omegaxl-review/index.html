@@ -6,6 +6,11 @@
     <title>The Top 3 Most Popular Joint Supplements Of 2026</title>
     <meta name="description" content="Is Omega XL any good? We compare the 3 most searched joint supplements in the U.S. right now — ingredients, evidence, guarantees and real user results.">
 
+    <!-- o Clarity sobe no idle, mas o handshake com a origem pode comecar antes:
+         o PageSpeed estima 300ms de LCP nisso -->
+    <link rel="preconnect" href="https://e.clarity.ms" crossorigin>
+    <link rel="dns-prefetch" href="https://scripts.clarity.ms">
+
     <link rel="canonical" href="https://top5-reports.store/omegaxl-review/">
     <meta property="og:type" content="article">
     <meta property="og:title" content="We Tested Omega XL and 2 Other Joint Supplements — The #1 Pick Surprised Us">
@@ -378,7 +383,10 @@ img[src*="top3-products"]{border-radius:16px}
       .bar { height: 17px; }
       .bar em.average small { font-size: 9px; padding: 0 10px 0 0; }
     }
-    #read-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: #f7da48; z-index: 10000; transition: width .1s linear; }
+    /* largura fixa + scaleX: a barra anda no compositor, sem tocar em layout */
+    #read-progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%;
+      background: #f7da48; z-index: 10000; transform: scaleX(0); transform-origin: 0 50%;
+      will-change: transform; }
     html { scroll-behavior: smooth; }
     #top-pick { scroll-margin-top: 24px; }
 
@@ -1387,12 +1395,28 @@ You’re just moving water around.</p>
             document.getElementById("year").textContent = d.getFullYear();
         } catch (e) {}
 
-        // Barra de progresso de leitura
+        // Barra de progresso de leitura.
+        // Ler scrollHeight e escrever width no mesmo handler forcava reflow a cada
+        // scroll (54ms no PageSpeed). Agora a escrita vai para o rAF e usa
+        // transform, que so compoe em vez de recalcular layout.
         var bar = document.getElementById("read-progress");
         if (bar) {
+            var ticking = false;
+            function paint() {
+                ticking = false;
+                // Medir aqui dentro, e nao em cache: no celular a barra de endereco
+                // recolhe durante o scroll e muda a altura do viewport, o que
+                // deixaria um valor cacheado errado (a barra travava em ~27%).
+                var de = document.documentElement;
+                var max = de.scrollHeight - de.clientHeight;
+                var p = max > 0 ? window.scrollY / max : 0;
+                bar.style.transform = "scaleX(" + (p < 0 ? 0 : p > 1 ? 1 : p) + ")";
+            }
+            // O rAF garante no maximo uma leitura+escrita por frame, ja alinhada ao
+            // ciclo de layout. O reflow forcado vinha de ler e escrever direto no
+            // handler de scroll, que dispara varias vezes por frame.
             window.addEventListener("scroll", function() {
-                var h = document.documentElement;
-                bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100 + "%";
+                if (!ticking) { ticking = true; requestAnimationFrame(paint); }
             }, { passive: true });
         }
     });
