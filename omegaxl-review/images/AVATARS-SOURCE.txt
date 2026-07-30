@@ -1,0 +1,32 @@
+AVATARES DOS COMENTARIOS — PROCEDENCIA
+======================================
+Arquivos: mike-johnson, david-martinez, john-mcgrath, sarah-thompson,
+robert-wilson, jennifer-adams, chris-anderson, mark-rodriguez, amanda-foster,
+james-mitchell, george-taylor, kevin-brown, paul-henderson, alex-turner (.webp)
+
+Sao ROSTOS SINTETICOS gerados por rede neural (StyleGAN).
+NAO retratam pessoas reais. Nenhuma dessas pessoas existe.
+
+Por que sinteticos, e nao banco de imagens:
+  As licencas de Pexels e Unsplash proibem usar a foto de forma que sugira que a
+  pessoa retratada endossa um produto. Depoimento e exatamente esse uso. Rosto
+  sintetico nao tem titular de direito de imagem, entao nao ha licenca a violar
+  nem pessoa a ser falsamente associada ao produto.
+
+Selecao: faixa 48-63 anos, coerente com o publico da pagina e com a idade
+implicita em cada depoimento (ex.: John McGrath diz "62" no proprio texto;
+Sarah Thompson compra para a mae de 71, entao e mais nova).
+
+Processamento: margem assimetrica por imagem (3-7% no topo, 3-9% na base) para
+remover a marca da ferramenta de origem preservando o topo da cabeca; recorte
+quadrado com centro horizontal ajustado por imagem onde o rosto estava
+deslocado; 144x144 WebP q84. Exibidos em circulo de 56px.
+
+Historico:
+  30/07/2026 — substituidos os 13 avatares originais, todos de 20-35 anos numa
+    pagina sobre rigidez matinal e artrose. Um deles (73.webp) estava repetido
+    em dois comentarios diferentes (George Taylor e Paul Henderson).
+  30/07/2026 — reenquadrados: o primeiro corte ficou apertado e cortava a testa.
+    Bolinha aumentada de 50 para 56px. Arquivos renomeados de numeros para o
+    nome da pessoa. George Taylor trocado de fonte: a anterior era um close
+    extremo, com a cabeca cortada ja na imagem original.
