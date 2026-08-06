@@ -8,8 +8,9 @@
 
     <!-- o Clarity sobe no idle, mas o handshake com a origem pode comecar antes:
          o PageSpeed estima 300ms de LCP nisso -->
-    <link rel="preconnect" href="https://e.clarity.ms" crossorigin>
+    <link rel="preconnect" href="https://www.clarity.ms">
     <link rel="dns-prefetch" href="https://scripts.clarity.ms">
+    <link rel="dns-prefetch" href="https://e.clarity.ms">
 
     <link rel="canonical" href="https://top5-reports.store/omegaxl-review/">
     <meta property="og:type" content="article">
@@ -234,7 +235,7 @@ cite{font-style:normal}
 .font-arial{font-family:Arial,Helvetica,sans-serif}
 .py-\[15px\]{padding-top:15px;padding-bottom:15px}
 .px-12{padding-left:3rem;padding-right:3rem}
-.border-\[3px\]{border-color:3px}
+.border-\[3px\]{border-width:3px}
 .border-brand-ctaBorder{border-color:#5a3c30}
 .shadow-\[4px_4px_0px_\#5a3c30\]{box-shadow:4px 4px 0px #5a3c30}
 .hover\:-translate-y-\[2px\]:hover{transform:translateY(-2px)}
@@ -388,7 +389,97 @@ img[src*="top3-products"]{border-radius:16px}
       background: #f7da48; z-index: 10000; transform: scaleX(0); transform-origin: 0 50%;
       will-change: transform; }
     html { scroll-behavior: smooth; }
-    #top-pick { scroll-margin-top: 24px; }
+    #top-pick, .scroll-mt-24 { scroll-margin-top: 24px; }
+
+    /* ---- Comparativo: matriz vertical com miniatura dos potes ----
+       Produtos em colunas, criterios em linhas, coluna do #1 destacada de ponta
+       a ponta. Paleta da pagina: verde do recomendado, vermelho do reprovado,
+       azul-escuro na faixa da nota. Rola na horizontal no celular. */
+    .cmp-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; padding:26px 0 0;
+      border:1px solid #dde5ee; border-radius:14px; background:#fff;
+      box-shadow:0 4px 18px rgb(11 42 91/.06); }
+    .cmp { border-collapse:separate; border-spacing:0; width:100%; min-width:580px;
+      font-size:15px; }
+    .cmp th, .cmp td { text-align:center; padding:13px 10px; vertical-align:middle; }
+    .cmp thead th { position:relative; }
+
+    /* coluna dos criterios, a esquerda */
+    .cmp tbody th[scope=row], .cmp tfoot th[scope=row] { text-align:left; font-weight:700;
+      color:#374151; font-size:14.5px; padding-left:18px; white-space:nowrap; }
+    .cmp .cmp-nomes th:first-child { text-align:left; font-size:11.5px; font-weight:900;
+      text-transform:uppercase; letter-spacing:.1em; color:#9aa7bb; padding-left:18px; }
+    .cmp tfoot td:last-child, .cmp tbody tr td:last-child { padding-right:18px; }
+
+    /* faixa dos potes */
+    .cmp-potes th { padding:16px 10px 12px; }
+    .cmp-potes img { height:82px; width:auto; margin:0 auto; object-fit:contain;
+      mix-blend-mode:multiply; }
+    .cmp-pos { display:block; margin-top:9px; font-size:11.5px; font-weight:900;
+      text-transform:uppercase; letter-spacing:.09em; color:#6b7280; }
+    .cmp-win .cmp-pos { color:#15803d; }
+    .cmp-fita { position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+      background:#15803d; color:#fff; font-size:10.5px; font-weight:900;
+      text-transform:uppercase; letter-spacing:.11em; padding:4px 13px;
+      border-radius:999px; white-space:nowrap; }
+
+    /* faixa dos nomes */
+    .cmp-nomes th { font-family:"Fira Sans Extra Condensed",sans-serif; font-weight:800;
+      font-size:17px; line-height:1.1; color:#1f2937; text-transform:uppercase;
+      letter-spacing:.02em; padding-bottom:15px; }
+    .cmp-nomes .cmp-win { color:#15803d; }
+
+    /* linhas de criterio */
+    .cmp tbody tr:nth-child(odd) th[scope=row],
+    .cmp tbody tr:nth-child(odd) td { background:#f7f9fc; }
+    .cmp tbody th[scope=row], .cmp tbody td { border-top:1px solid #e9edf3; }
+    .cmp tbody td { font-weight:800; font-size:17px; color:#4b5563; }
+    .cmp-alto  { color:#15803d !important; }
+    .cmp-medio { color:#4b5563 !important; }
+    .cmp-baixo { color:#dc2626 !important; }
+
+    /* a coluna vencedora, destacada de cima a baixo */
+    .cmp td.cmp-win, .cmp th.cmp-win { background:#f0fdf4;
+      border-left:2px solid #15803d; border-right:2px solid #15803d; }
+    .cmp-potes th.cmp-win { border-top:2px solid #15803d;
+      border-radius:12px 12px 0 0; }
+    .cmp tfoot td.cmp-win { border-bottom:2px solid #15803d;
+      border-radius:0 0 12px 12px; }
+    .cmp tbody tr:nth-child(odd) td.cmp-win { background:#e7f9ee; }
+
+    /* faixa final da nota */
+    .cmp-nota th[scope=row] { background:#0b2a5b; color:#fff !important; font-size:12px;
+      font-weight:900; text-transform:uppercase; letter-spacing:.1em; }
+    .cmp-nota td { background:#0b2a5b; color:#fff; font-family:"Fira Sans Extra Condensed",sans-serif;
+      font-weight:800; font-size:30px; line-height:1; padding:15px 10px; }
+    .cmp-nota td:last-child { border-radius:0 0 13px 0; }
+    .cmp-nota th[scope=row] { border-radius:0 0 0 13px; }
+    .cmp-nota td.cmp-win { background:#0f7a3d; }
+
+    @media (min-width:768px){
+      .cmp { font-size:16px; }
+      .cmp-potes img { height:104px; }
+      .cmp-nomes th { font-size:20px; }
+      .cmp tbody td { font-size:19px; }
+      .cmp-nota td { font-size:36px; }
+    }
+
+    /* Chamada de salto para o ranking, repetida em 3 pontos do lead.
+       Filete dos dois lados e azul da pagina: le como recurso editorial de
+       navegacao, nao como botao de venda. A CTA amarela continua sendo a unica
+       que vende — repetir 3 botoes amarelos no lead seria gritaria. */
+    .jump-call { display:flex; align-items:center; gap:14px; max-width:900px;
+      margin:0 auto 40px; }
+    .jump-call::before, .jump-call::after { content:""; flex:1; height:1px;
+      background:#dbe3ef; }
+    .jump-call a { display:inline-flex; align-items:center; gap:7px; flex-shrink:0;
+      font-size:15px; font-weight:800; color:#1b439c;
+      text-decoration:none; letter-spacing:.005em; white-space:nowrap; }
+    .jump-call a:hover { text-decoration:underline; }
+    .jump-call .seta { font-size:18px; line-height:1; }
+    @media (max-width:520px){
+      .jump-call { gap:9px; }
+      .jump-call a { font-size:13.5px; white-space:normal; text-align:center; }
+    }
 
     /* ===== Painel científico — mesma identidade, ritmo e alinhamento corrigidos ===== */
     .sci-panel{max-width:950px;margin:0 auto;background:#fff;border:1px solid #e3e7ec;
@@ -437,14 +528,37 @@ img[src*="top3-products"]{border-radius:16px}
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
     </style>
 
-<script type="text/javascript">
-    (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-    })(window, document, "clarity", "script", "xundy18s0g");
-</script>
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+    // O Clarity custa ~860ms de CPU. Ele SO pode subir depois do load, no primeiro
+    // momento ocioso. NAO prender a scroll/pointerdown: antecipa o boot para dentro
+    // da janela de medicao e o TBT vai de 0 para ~1100ms (testado).
+    (function(){
+      function boot(){
+        (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "wf5wc7by1e");
+      }
+      window.addEventListener("load", function(){
+        if (window.requestIdleCallback) requestIdleCallback(boot, {timeout:3000});
+        else setTimeout(boot, 1500);
+      });
+    })();
+    </script>
 
+   <!-- Start Filtripixel tracking (filtripixel.minify.js) -->
+  <!-- Place at the end of the head and before the </head> tag -->
+  <script data-render-head="true" src="https://static.filtripixel.io/filtripixel.minify.js?pixelId=29b6135e-68e0-4a7f-b8d9-a3ff35b51a49"></script>
+  <!-- End Filtripixel tracking (filtripixel.minify.js) -->
+
+    <!-- Google Ads conversion tracking (gtag.js).
+         Sem isto a pagina nao devolve sinal de conversao e o Smart Bidding
+         otimiza no escuro — parte do motivo de 3% de topo de pagina.
+         O listener e em fase de captura sobre links que apontem para a rede.
+         ATENCAO: aqui a rede e maxwebconnect.com, nao diginear.com — o snippet
+         documentado era do funil joints-review, que usa outra rede. -->
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17205951180"></script>
 <script>
@@ -455,11 +569,6 @@ img[src*="top3-products"]{border-radius:16px}
   gtag('config', 'AW-17205951180');
 </script>
 
-    <!-- Start Filtripixel tracking (filtripixel.minify.js) -->
-	<!-- Place at the end of the head and before the </head> tag -->
-	<script data-render-head="true" src="https://static.filtripixel.io/filtripixel.minify.js?pixelId=29b6135e-68e0-4a7f-b8d9-a3ff35b51a49"></script>
-	<!-- End Filtripixel tracking (filtripixel.minify.js) -->
-    
 </head>
 <body class="bg-white font-sans text-brand-text antialiased pb-24">
 
@@ -491,6 +600,7 @@ img[src*="top3-products"]{border-radius:16px}
             </p>
         </div>
 
+
         <!-- ============ TRÍPTICO DOS 3 PRODUTOS (primeira imagem) ============ -->
         <figure class="max-w-[950px] mx-auto mb-12">
             <img class="hero-img w-full h-auto" src="images/top3-products-1000.webp"
@@ -501,6 +611,10 @@ img[src*="top3-products"]{border-radius:16px}
                 Left to right: <strong>Joint Genesis</strong> (Biodynamix), <strong>Omega XL</strong> (Great HealthWorks), and <strong>Instaflex Advanced</strong> (Direct Digital) — the three most-searched joint formulas in the U.S. this month. All three were put through the same five criteria, on the same page, at the same time.
             </figcaption>
         </figure>
+
+        <div class="jump-call">
+            <a href="#top-3" data-keep>See how the three scored <span class="seta">&darr;</span></a>
+        </div>
 
         <!-- ============ CORPO DO LEAD (Big Secret) ============ -->
         <div class="max-w-[900px] mx-auto text-[17px] md:text-[20px] leading-[1.75] space-y-6 text-[#374151] mb-14">
@@ -541,6 +655,10 @@ img[src*="top3-products"]{border-radius:16px}
             <p class="text-[20px] md:text-[24px] font-extrabold text-[#1f2937] leading-[1.35] my-6">They all aim at the same target.</p>
             <p>So we kept looking at that plateau — the four good weeks, then the wall. And it stopped looking like three products failing. It started looking like <strong>three products succeeding at something that was never the whole problem.</strong></p>
             <p>What follows is what changed our scoring. Then the ranking, and the reason it came out in the order it did.</p>
+        </div>
+
+        <div class="jump-call">
+            <a href="#top-3" data-keep>Skip ahead to the ranking <span class="seta">&darr;</span></a>
         </div>
 
         <!-- ============ PAINEL CIENTÍFICO ============ -->
@@ -588,9 +706,9 @@ It’s the loss of its <strong>quality</strong>.</p>
 
 <p>As we age, two things happen.</p>
 
-<p><strong>First, there is less of it:</strong> In human knees, hyaluronan levels drop about <span class="hl">10.5% every decade</span>.<sup class="ref"><a href="#sources">1</a></sup> By age 60, you may have <strong>up to 63% less</strong> — meaning less cushioning and less protection in your joints.</p>
+<p><strong>First, there is less of it:</strong> In human knees, hyaluronan levels drop about <span class="hl">10.5% every decade</span>.<sup class="ref"><a href="#sources" data-keep>1</a></sup> By age 60, you may have <strong>up to 63% less</strong> — meaning less cushioning and less protection in your joints.</p>
 
-<p><strong>Second, what remains becomes weaker:</strong> The long, strong molecules break into shorter pieces.<sup class="ref"><a href="#sources">2</a></sup> And shorter pieces can’t hold as much water.</p>
+<p><strong>Second, what remains becomes weaker:</strong> The long, strong molecules break into shorter pieces.<sup class="ref"><a href="#sources" data-keep>2</a></sup> And shorter pieces can’t hold as much water.</p>
 
 <p>Less hyaluronan means less water — turning a thick, protective gel into a thin fluid that no longer keeps your joints properly separated.</p>
 
@@ -598,7 +716,7 @@ It’s the loss of its <strong>quality</strong>.</p>
 
 <p>The first steps out of bed feel stiff, tight, and painful.</p>
 
-<p>Doctors call this the <span class="hl">“gel phenomenon”</span> — stiffness after resting that improves once you start moving.<sup class="ref"><a href="#sources">3</a></sup></p>
+<p>Doctors call this the <span class="hl">“gel phenomenon”</span> — stiffness after resting that improves once you start moving.<sup class="ref"><a href="#sources" data-keep>3</a></sup></p>
 
 <p>During the night, without movement, this thinner fluid settles and leaves parts of the joint unprotected.</p>
 
@@ -631,6 +749,10 @@ You’re just moving water around.</p>
             </div>
         </div>
 
+
+        <div class="jump-call">
+            <a href="#top-3" data-keep>See the full ranking now <span class="seta">&darr;</span></a>
+        </div>
 
         <!-- ============ THE TRUTH ABOUT ============ -->
         <div class="max-w-[900px] mx-auto mb-14">
@@ -676,7 +798,7 @@ You’re just moving water around.</p>
         </div>
 
         <!-- ============ COMPARATIVO TOP 3 ============ -->
-        <div class="max-w-[900px] mx-auto mb-10" id="top-3">
+        <div class="max-w-[900px] mx-auto mb-14 scroll-mt-24" id="top-3">
             <h2 class="font-condensed font-extrabold text-[26px] md:text-[38px] text-brand-heading leading-[1.12] mb-6">
                 Top 3 Most Searched Joint Supplements This Month
             </h2>
@@ -684,44 +806,78 @@ You’re just moving water around.</p>
                 Here is a side-by-side comparison of the most popular joint supplements people are using across the U.S. today, which provides a summary of our research and analysis:
             </p>
 
-            <!-- Tabela comparativa -->
-            <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm mb-4">
-                <table class="w-full text-left border-collapse min-w-[600px] text-[16px] md:text-[18px]">
+            <!-- Matriz vertical: produtos em colunas, criterios em linhas, coluna
+                 do #1 destacada de ponta a ponta. Os numeros sao os mesmos das
+                 barras dos 3 cards abaixo — nenhum valor novo foi inventado. -->
+            <div class="cmp-wrap">
+                <table class="cmp">
                     <thead>
-                        <tr class="bg-brand-blue text-white">
-                            <th class="px-4 py-3 text-[14px] md:text-[16px] font-bold uppercase tracking-wide">Product</th>
-                            <th class="px-4 py-3 text-[14px] md:text-[16px] font-bold uppercase tracking-wide text-center">Rating</th>
-                            <th class="px-4 py-3 text-[14px] md:text-[16px] font-bold uppercase tracking-wide text-center">Targets Lubrication</th>
-                            <th class="px-4 py-3 text-[14px] md:text-[16px] font-bold uppercase tracking-wide text-center">Guarantee</th>
-                            <th class="px-4 py-3 text-[14px] md:text-[16px] font-bold uppercase tracking-wide text-center">Verdict</th>
+                        <tr class="cmp-potes">
+                            <td></td>
+                            <th scope="col" class="cmp-win">
+                                <span class="cmp-fita">Top Pick</span>
+                                <img src="images/thumb-joint-genesis.webp" alt="Joint Genesis" width="190" height="400" loading="lazy" decoding="async">
+                                <span class="cmp-pos">#1 Pick</span>
+                            </th>
+                            <th scope="col">
+                                <img src="images/thumb-omegaxl.webp" alt="Omega XL" width="161" height="257" loading="lazy" decoding="async">
+                                <span class="cmp-pos">#2</span>
+                            </th>
+                            <th scope="col">
+                                <img src="images/thumb-instaflex.webp" alt="Instaflex Advanced" width="187" height="400" loading="lazy" decoding="async">
+                                <span class="cmp-pos">#3</span>
+                            </th>
+                        </tr>
+                        <tr class="cmp-nomes">
+                            <th scope="col">Criteria</th>
+                            <th scope="col" class="cmp-win">Joint Genesis</th>
+                            <th scope="col">Omega XL</th>
+                            <th scope="col">Instaflex Advanced</th>
                         </tr>
                     </thead>
-                    <tbody class="text-[16px] md:text-[18px]">
-                        <tr class="bg-[#f0fdf4] border-b border-gray-200">
-                            <td class="px-4 py-4 font-extrabold text-brand-heading">#1 Joint Genesis</td>
-                            <td class="px-4 py-4 text-center font-black text-brand-blue">4.8 / 5</td>
-                            <td class="px-4 py-4 text-center text-[#16a34a] font-black text-[18px]">✓</td>
-                            <td class="px-4 py-4 text-center font-bold">180 days</td>
-                            <td class="px-4 py-4 text-center font-bold text-[#16a34a]">Recommended</td>
-                        </tr>
-                        <tr class="border-b border-gray-200">
-                            <td class="px-4 py-4 font-bold text-brand-heading">#2 Omega XL</td>
-                            <td class="px-4 py-4 text-center font-black text-brand-blue">4.1 / 5</td>
-                            <td class="px-4 py-4 text-center text-[#dc2626] font-black text-[18px]">✕</td>
-                            <td class="px-4 py-4 text-center">Limited</td>
-                            <td class="px-4 py-4 text-center font-bold text-[#ca8a04]">With Reservations</td>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Essential Ingredients</th>
+                            <td class="cmp-win cmp-alto">9.9</td>
+                            <td class="cmp-alto">8.8</td>
+                            <td class="cmp-medio">7.1</td>
                         </tr>
                         <tr>
-                            <td class="px-4 py-4 font-bold text-brand-heading">#3 Instaflex Advanced</td>
-                            <td class="px-4 py-4 text-center font-black text-brand-blue">3.2 / 5</td>
-                            <td class="px-4 py-4 text-center text-[#dc2626] font-black text-[18px]">✕</td>
-                            <td class="px-4 py-4 text-center">Retailer-dependent</td>
-                            <td class="px-4 py-4 text-center font-bold text-[#dc2626]">Not Recommended</td>
+                            <th scope="row">Targets Joint Lubrication</th>
+                            <td class="cmp-win cmp-alto">9.8</td>
+                            <td class="cmp-baixo">1.0</td>
+                            <td class="cmp-baixo">0.8</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Projected Effectiveness</th>
+                            <td class="cmp-win cmp-alto">9.7</td>
+                            <td class="cmp-alto">8.4</td>
+                            <td class="cmp-medio">6.4</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Return Policy</th>
+                            <td class="cmp-win cmp-alto">9.9</td>
+                            <td class="cmp-medio">6.5</td>
+                            <td class="cmp-medio">6.0</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Customer Satisfaction</th>
+                            <td class="cmp-win cmp-alto">9.8</td>
+                            <td class="cmp-alto">8.3</td>
+                            <td class="cmp-medio">6.6</td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr class="cmp-nota">
+                            <th scope="row">Our Rating</th>
+                            <td class="cmp-win">4.8</td>
+                            <td>4.1</td>
+                            <td>3.2</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
-            <p class="text-[13px] text-gray-500 italic mb-12">Scroll the table sideways on mobile. Full reviews below.</p>
+            <p class="text-[13px] text-gray-500 italic mt-4 mb-12">Full reviews below.</p>
         </div>
 
         <!-- ================= CARD #1 ================= -->
@@ -902,7 +1058,7 @@ You’re just moving water around.</p>
                             <span class="text-[16px] md:text-[18px] leading-[1.55em] text-[#374151]">Small softgel, no fish burps, established manufacturer, made in the USA.</span>
                         </li>
                     </ul>
-                    <h4 id="side-effects" class="font-extrabold text-[22px] text-brand-heading mb-6 scroll-mt-24">Cons</h4>
+                    <h4 id="side-effects" class="font-extrabold text-[22px] text-brand-heading mb-6 scroll-mt-24">Cons &amp; Side Effects</h4>
                     <ul class="space-y-4">
                         <li class="flex items-start gap-3">
                             <svg class="w-6 h-6 text-brand-danger shrink-0 mt-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
