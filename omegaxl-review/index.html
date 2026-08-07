@@ -391,6 +391,18 @@ img[src*="top3-products"]{border-radius:16px}
     html { scroll-behavior: smooth; }
     #top-pick, .scroll-mt-24 { scroll-margin-top: 24px; }
 
+    /* ---- Fecho do card do Omega XL ----
+       Vira a atencao para o #1. Verde do recomendado no filete, para o bloco
+       se ligar visualmente ao card do Joint Genesis la em cima. */
+    .oxl-fecho { margin-top:26px; padding:20px 22px; background:#f0fdf4;
+      border-left:5px solid #15803d; border-radius:0 12px 12px 0; }
+    .oxl-fecho p { font-size:17px; line-height:1.6; color:#374151; }
+    .oxl-fecho p + p { margin-top:12px; }
+    .oxl-fecho-t { font-family:"Fira Sans Extra Condensed",sans-serif; font-weight:800;
+      font-size:19px; line-height:1.1; color:#15803d; text-transform:uppercase;
+      letter-spacing:.04em; margin-bottom:12px !important; }
+    @media (min-width:768px){ .oxl-fecho { padding:24px 28px; } .oxl-fecho p { font-size:18px; } }
+
     /* ---- Comparativo: matriz vertical com miniatura dos potes ----
        Produtos em colunas, criterios em linhas, coluna do #1 destacada de ponta
        a ponta. Paleta da pagina: verde do recomendado, vermelho do reprovado,
@@ -528,7 +540,7 @@ img[src*="top3-products"]{border-radius:16px}
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
     </style>
 
-    <script type="text/javascript">
+<script type="text/javascript">
     (function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
@@ -1074,13 +1086,31 @@ You’re just moving water around.</p>
                         <p>But it has one limit that no amount of quality can get past. <strong>It is an anti-inflammatory. And inflammation is the result, not the cause.</strong></p>
                         <p>Omega XL can calm the fire. It cannot refill the fluid that stopped cushioning the joint. That is why so many long-term users describe hitting a ceiling. <strong>They feel real improvement early. Then it stops. Then they have to keep taking it forever just to hold the line.</strong></p>
                         <p>Add the shellfish base, the four-to-eight-week wait, and the auto-ship hassle. You get less for your money.</p>
+
+                        <h4 class="font-extrabold text-[19px] md:text-[21px] text-[#1f2937] pt-3">Overall Analysis</h4>
+                        <p>Omega XL has been one of the most marketed joint supplements in America &mdash; and there are legitimate reasons for its following. Its proprietary <strong>PCSO-524&reg;</strong> extract from green-lipped mussels delivers a broad spectrum of over 30 healthy fatty acids, including DHA and EPA, which research has associated with supporting a healthy inflammatory response in joint tissue.</p>
+                        <p>For users with mild, inflammation-driven discomfort, Omega XL can provide meaningful short-term relief. The formula has clinical support for its anti-inflammatory omega-3 mechanism, and the softgel format is easy to take daily.</p>
+                        <p>After testing it head-to-head against <strong>Joint Genesis&trade;</strong>, however, the structural gap became impossible to ignore.</p>
+
+                        <h4 class="font-extrabold text-[19px] md:text-[21px] text-[#1f2937] pt-3">Where Omega XL Falls Short</h4>
+                        <p>Omega XL addresses inflammation &mdash; but <strong>inflammation is a symptom, not the structural root</strong> of age-related joint decay. The actual root is the thinning and drying of synovial fluid caused by hyaluronan loss. Omega XL contains no hyaluronan-replenishing ingredients, no <strong>Mobilee&reg;</strong>, and no compound proven to rebuild the synovial fluid's structural integrity.</p>
+                        <p>This distinction matters enormously for long-term results. You can reduce inflammation signals while your synovial fluid continues to thin, your cartilage continues to lose its cushioning, and joint function continues to decline. That is exactly what our testers observed: <strong>solid early comfort improvements that plateaued and partially reversed after the 4&ndash;5 week mark</strong>, as the underlying structural problem continued unaddressed.</p>
+
                         <p>Here is the part worth sitting with. <strong>Nobody's actual goal is less inflammation.</strong> That is a number on a chart. What people want is to come down the stairs without holding the rail, and to get out of a chair without thinking about it first.</p>
-                        <p>Omega XL works on the number. <strong>The #1 pick works on the fluid the number is coming from</strong> — and it covers the inflammation side too, with Boswellia serrata and ginger root.</p>
+                        <p>Omega XL works on the number. <strong>The #1 pick works on the fluid the number is coming from</strong> &mdash; and it covers the inflammation side too, with Boswellia serrata and ginger root.</p>
                         <p>Same problem. One more layer solved. And 180 days to judge it, instead of a subscription you have to call to cancel.</p>
                     </div>
 
+                    <!-- Fecho: vira a atencao para o #1. Fundo claro e filete verde
+                         para o bloco se ligar visualmente ao card do Joint Genesis. -->
+                    <div class="oxl-fecho">
+                        <p class="oxl-fecho-t">The honest bottom line</p>
+                        <p>If your discomfort is mild and inflammation-driven, Omega XL will probably help &mdash; for a while. <strong>But if you have already lived the plateau</strong>, more anti-inflammatory is not the answer. It never was.</p>
+                        <p><strong>Joint Genesis is the only formula on this page that goes after the fluid itself</strong> — and it still covers the inflammation side. Same daily habit, one more layer solved, and <strong>180 days to decide</strong> instead of a subscription you have to phone in to cancel.</p>
+                    </div>
+
                     <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                        <a href="#" class="flex-1 flex items-center justify-center gap-2 bg-white text-brand-blue font-arial font-extrabold text-[18px] py-[14px] px-6 rounded-full border-2 border-brand-blue hover:bg-brand-blue hover:text-white transition-all duration-200 text-center uppercase tracking-wide">See The #1 Rated Formula</a>
+                        <a href="#" class="flex-1 flex items-center justify-center gap-2 bg-brand-ctaBg text-brand-ctaText font-arial font-extrabold italic text-[18px] py-[14px] px-6 rounded-full border-[3px] border-brand-ctaBorder shadow-[3px_3px_0px_#5a3c30] hover:-translate-y-[1px] transition-all duration-200 text-center uppercase tracking-wide">Get Joint Genesis &mdash; Our #1 Pick &rarr;</a>
                         <a href="#top-pick" data-keep class="flex-1 flex items-center justify-center gap-2 bg-brand-ctaBg text-brand-ctaText font-arial font-extrabold italic text-[18px] py-[14px] px-6 rounded-full border-2 border-brand-ctaBorder shadow-[3px_3px_0px_#5a3c30] hover:-translate-y-[1px] transition-all duration-200 text-center">Back to Our Top Pick &uarr;</a>
                     </div>
                     <p class="text-[13px] md:text-[14px] text-gray-500 italic mt-5">* Results may vary and do not necessarily reflect typical results of using this product. Please visit product website for more information.</p>
