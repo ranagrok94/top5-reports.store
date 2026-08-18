@@ -7,8 +7,17 @@
     <meta name="description" content="VasoZyte reviews and complaints, tested: we ranked it against 2 other male performance formulas on dosing, mechanism, consistency and guarantee. Here is where it landed.">
     <meta name="robots" content="index,follow,max-image-preview:large">
 
-    <link rel="preconnect" href="https://e.clarity.ms" crossorigin>
+    <!-- O Filtripixel e render-blocking e, depois de carregar, chama filtripixel.io:
+         essa segunda conexao custa 780 ms no caminho critico. O preconnect abre
+         DNS+TCP+TLS antes, sem tocar no script (Lighthouse estima -300 ms de LCP). -->
+    <!-- sem crossorigin: a tag <script> busca em modo no-cors; com o atributo
+         o browser abriria uma conexao CORS separada e o hint seria perdido -->
+    <link rel="preconnect" href="https://static.filtripixel.io">
+    <link rel="preconnect" href="https://filtripixel.io" crossorigin>
+    <!-- Clarity subiu para o idle: preconnect aqui ficava ocioso e queimava uma
+         conexao. O dns-prefetch e barato e ainda adianta a resolucao. -->
     <link rel="dns-prefetch" href="https://scripts.clarity.ms">
+    <link rel="dns-prefetch" href="https://e.clarity.ms">
 
     <link rel="canonical" href="https://top5-reports.store/vasozyte-review/">
     <meta property="og:type" content="article">
